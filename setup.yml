@@ -1,0 +1,18 @@
+- name: Probando...
+  hosts: fisica
+  become: yes
+  tasks:
+    - name: Get url
+      get_url:
+        url: https://download.virtualbox.org/virtualbox/rpm/el/virtualbox.repo
+        dest: /etc/yum.repos.d
+
+    - name: Install VirtualBox
+      yum:
+        name: VirtualBox-6.0
+        state: present
+
+    - name: Install vagrant
+      yum:
+        name: https://releases.hashicorp.com/vagrant/2.2.7/vagrant_2.2.7_x86_64.rpm
+        state: present
