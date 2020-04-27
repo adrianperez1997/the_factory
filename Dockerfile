@@ -10,6 +10,7 @@ RUN mkdir /keys
 
 ADD hosts /etc/ansible/
 ADD /keys/miclave /keys/
+RUN chmod 600 /keys/miclave
 
 ADD requirements.txt /
 ADD setup.yml /
