@@ -5,7 +5,9 @@ RUN apt update &&\
     apt install -y software-properties-common &&\
     apt-add-repository --yes --update ppa:ansible/ansible &&\
     apt install -y ansible &&\
-    apt install -y python3-pip
+    apt install -y python3-pip &&\
+    ansible-galaxy install geerlingguy.docker &&\
+    ansible-galaxy install geerlingguy.pip
 
 
 ADD requirements.txt /
@@ -13,12 +15,13 @@ RUN pip3 install -r requirements.txt
 
 RUN mkdir /keys
 
-ADD hosts /etc/ansible/
-ADD /keys/miclave /keys/
+COPY /keys/* /keys/
+
+
+COPY /data/* /data/
+
 RUN chmod 600 /keys/miclave
+RUN chmod 644 /keys/miclave.pub
 
-ADD setup.yml /
-ADD main3.py /
-
-#CMD ["ansible', '-m','ping','localhost']
-CMD [ "python3", "./main3.py" ]
+ADD main.py /
+CMD [ "python3", "./main.py" ]

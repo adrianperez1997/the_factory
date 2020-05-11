@@ -1,5 +1,5 @@
 - name: Probando centos...
-  hosts: centos
+  hosts: virtual
   become: yes
   user: root
   tasks:

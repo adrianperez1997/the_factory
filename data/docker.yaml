@@ -1,0 +1,53 @@
+- name: Instalando docker y weave
+  hosts: virtual
+  become: yes
+  tasks:
+    - name: Open 6783/tcp port
+      iptables:
+        chain: INPUT
+        protocol: tcp
+        destination_port: 6783
+        jump: ACCEPT
+      become: yes
+
+    - name: Open 6783/udp port
+      iptables:
+        chain: INPUT
+        protocol: udp
+        destination_port: 6783
+        jump: ACCEPT
+      become: yes
+
+    - name: Open 6784/udp port
+      iptables:
+        chain: INPUT
+        protocol: udp
+        destination_port: 6784
+        jump: ACCEPT
+      become: yes
+
+    - import_role:
+        name: geerlingguy.docker
+
+    - include_role:
+        name: geerlingguy.docker
+
+    - import_role:
+        name: geerlingguy.pip
+
+    - include_role:
+        name: geerlingguy.pip
+
+    - name: Install Docker Module for Python
+      pip:
+        name: docker
+
+    - name: Get weave url
+      get_url:
+        url: http://git.io/weave
+        dest: /usr/local/bin/weave
+      become: yes
+
+    - name: change weave permissions
+      command: chmod a+x /usr/local/bin/weave
+      become: yes

@@ -1,2 +1,9 @@
 env/
+venv/
 .idea/
+.vagrant/
+*.retry
+keys/miclave.pub
+data/Vagrantfile
+data/deploy-container.yml
+docker-compose.yml
