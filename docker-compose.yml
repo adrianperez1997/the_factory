@@ -1,0 +1,6 @@
+version: '3'
+services:
+  tfg:
+    build: .
+    volumes:
+      - ./data:/data

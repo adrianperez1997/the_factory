@@ -6,4 +6,3 @@ venv/
 keys/miclave.pub
 data/Vagrantfile
 data/deploy-container.yml
-docker-compose.yml
