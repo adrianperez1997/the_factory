@@ -1,0 +1,10 @@
+- name: Instalando docker y weave
+  hosts: virtual
+  become: yes
+  tasks:
+    - name: weave launch
+      command: /usr/local/bin/weave launch
+      become: yes
+    - name: weave launch
+      shell: eval $(weave env)
+      become: yes

@@ -1,0 +1,7 @@
+- name: Instalando docker y weave
+  hosts: virtual1
+  become: yes
+  tasks:
+    - name: weave connect
+      command: /usr/local/bin/weave connect 172.28.226.252
+      become: yes

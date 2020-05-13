@@ -1,5 +1,8 @@
+#!/usr/bin/python3
+
 import subprocess
 import yaml
+import ansible_runner
 
 def setup(ip, port, key, user):
     o = {'all':{'hosts':{'fisica':{'ansible_host': ip,
@@ -73,13 +76,22 @@ add_fisica('fisica2','172.28.191.232', 22, '/keys/miclave', 'vagrant')
 #add_fisica('fisica3','172.28.14.233', 22, '/keys/miclave', 'vagrant')
 #add_fisica('fisica4','172.28.226.252', 22, '/keys/miclave', 'vagrant')
 add_virtual('virtual1','172.28.14.233', 22, '/keys/miclave', 'vagrant')
-add_virtual('virtual3','test.cosimico.wtf', 22, '/keys/miclave', 'root')
+#add_virtual('virtual3','test.cosimico.wtf', 22, '/keys/miclave', 'root')
 add_virtual('virtual2','172.28.226.252', 22, '/keys/miclave', 'vagrant')
 #r = subprocess.run(['ansible', '-m', 'ping', '-i', 'inventory.yaml', 'virtual'])
 #print('resultado ' + str(r))
 #r = subprocess.run(['ansible-galaxy', 'install', 'geerlingguy.docker'])
-#r = subprocess.run(['ansible-playbook','-i','inventory.yaml','deploy-container.yml'])
+#r = subprocess.run(['ansible-playbook','-i','data/inventory.yaml','data/weave-setup.yaml'])
+#r = subprocess.run(['ansible-playbook','-i','data/inventory.yaml','data/weave-connect.yaml'])
 #print('resultado ' + str(r))
+
+
+r = ansible_runner.run(private_data_dir='.', inventory='data/inventory.yaml', playbook='data/weave-setup.yaml')
+print("{}: {}".format(r.status, r.rc))
+# successful: 0
+for each_host_event in r.events:
+    if each_host_event['event'].find('fail') > -1:
+        print('ERROR: ' + each_host_event['event'] + '\n' + each_host_event['stdout'])
 
 '''
 Para conseguir la instalacion de weave dentro de las maquinas centos, primero debemos modificar las iptables para permitir

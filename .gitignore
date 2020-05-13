@@ -6,3 +6,8 @@ venv/
 keys/miclave.pub
 data/Vagrantfile
 data/deploy-container.yml
+testenv/
+testenv2/
+midb.db
+data/inventory.yaml
+bbdd.py

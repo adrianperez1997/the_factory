@@ -24,4 +24,5 @@ RUN chmod 600 /keys/miclave
 RUN chmod 644 /keys/miclave.pub
 
 ADD main.py /
-CMD [ "python3", "./main.py" ]
+RUN chmod 700 /main.py
+CMD ["./main.py" ]
