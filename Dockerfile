@@ -19,10 +19,13 @@ COPY /keys/* /keys/
 
 
 COPY /data/* /data/
+COPY /web/ /web/
 
 RUN chmod 600 /keys/miclave
 RUN chmod 644 /keys/miclave.pub
 
 ADD main.py /
 RUN chmod 700 /main.py
-CMD ["./main.py" ]
+RUN python3 /web/manage.py migrate
+
+CMD ["python3", "/web/manage.py", "runserver" ]

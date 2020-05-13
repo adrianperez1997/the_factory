@@ -2,5 +2,8 @@ version: '3'
 services:
   tfg:
     build: .
+    command: python3 /web/manage.py runserver 0.0.0.0:8000
     volumes:
       - ./data:/data
+    ports:
+      - 8000:8000
