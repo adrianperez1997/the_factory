@@ -1,0 +1,23 @@
+<html>
+    <body>
+
+    <form action="/form/" method="POST">
+        <p>Name: <input type="text" name="name"></p>
+        <p>User: <input type="text" name="user"></p>
+        <p>IP: <input type="text" name="ip"></p>
+        <p>Port: <input type="int" name="port"></p>
+        <p><input type="submit" value="Add"></p>
+    </form>
+    {% if form.errors %}
+    <p style="color: darkred;"> Por favor repite este campo</p>
+    {% endif %}
+
+    <form action="" method=POST">{% csrf_token %}
+        <table>
+            {{ form.as_table}}
+        </table>
+        <p><input type="submit" value="Add"></p>
+    </form>
+
+    </body>
+</html>

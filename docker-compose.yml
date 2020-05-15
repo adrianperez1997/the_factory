@@ -5,5 +5,6 @@ services:
     command: python3 /web/manage.py runserver 0.0.0.0:8000
     volumes:
       - ./data:/data
+      - ./web/db.sqlite3:/web/db.sqlite3
     ports:
       - 80:8000

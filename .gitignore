@@ -11,3 +11,4 @@ testenv2/
 midb.db
 data/inventory.yaml
 bbdd.py
+web/web/__pycache__/

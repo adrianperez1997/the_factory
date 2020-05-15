@@ -19,7 +19,6 @@ COPY /keys/* /keys/
 
 COPY /data/* /data/
 COPY /web/ /web/
-COPY /hola/ /hola/
 
 RUN chmod 600 /keys/miclave
 RUN chmod 644 /keys/miclave.pub
