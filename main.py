@@ -86,8 +86,9 @@ add_virtual('virtual2','172.28.226.252', 22, '/keys/miclave', 'vagrant')
 #print('resultado ' + str(r))
 
 
-r = ansible_runner.run(private_data_dir='.', inventory='data/inventory.yaml', playbook='data/weave-setup.yaml')
+r = ansible_runner.run(private_data_dir='.', inventory='data/inventory.yaml', playbook='data/info.yaml')
 print("{}: {}".format(r.status, r.rc))
+print('Ansible stats: ' + str(r.stats))
 # successful: 0
 for each_host_event in r.events:
     if each_host_event['event'].find('fail') > -1:

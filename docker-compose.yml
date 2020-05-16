@@ -2,7 +2,7 @@ version: '3'
 services:
   tfg:
     build: .
-    command: python3 /web/manage.py runserver 0.0.0.0:8000
+    command: runserver 0.0.0.0:8000
     volumes:
       - ./data:/data
       - ./web/db.sqlite3:/web/db.sqlite3

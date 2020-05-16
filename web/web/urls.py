@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from myApp.views import saludo2, new_machine, machines, form
+from myApp.views import saludo2, new_machine, machines, form, test
 
 
 urlpatterns = [
@@ -23,6 +23,8 @@ urlpatterns = [
     path('hola', saludo2),
     path('machine/<str:name>/<str:ip>/<str:key>/<str:user>/', new_machine),
     path('machines/', machines),
+    path('', machines),
     path('form/', form),
+    path('form/test/', test),
 
 ]
