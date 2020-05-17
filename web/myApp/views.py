@@ -5,22 +5,17 @@ import ansible_runner
 import yaml
 
 # Create your views here.
-def saludo2(request):
-
-    return render(request, 'miplantilla.html',{"lista": ['hola','saludo2']})
-
-def new_machine(request, name, ip, key, user, port=22):
-
-    m1 = Machines(name=name, ip=ip, key=key, user=user, port=port)
-    m1.save()
-    return render(request, 'miplantilla.html',{"lista": [name,ip]})
 
 def machines(request):
 
 
     machines = Machines.objects.all( )
 
-    return render(request, 'miplantilla.html',{"lista": machines})
+    dict = []
+    for m in machines:
+        dict.append({'name': m.name, 'ip':m.ip, 'port':m.port})
+
+    return render(request, 'miplantilla.html',{"machines":machines})
 
 def form(request):
     if request.method=="POST":
@@ -68,7 +63,6 @@ def test(request):
     r = ansible_runner.run(private_data_dir='.', inventory='data/inventory.yaml', playbook='data/info.yaml')
 
 
-    print(str(r.stats))
     if r.stats['failures'] != {}:
         msg = msg + 'FAILED' + str(r.stats['failures']) + '\n'
 

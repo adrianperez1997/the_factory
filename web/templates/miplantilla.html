@@ -5,17 +5,26 @@
         Hola Mundo
     </h1>
     <h2><strong> Mis maquinas</strong></h2>
-    <p>
-        <ul>
-        {% if lista%}
-            {% for machine in lista%}
-                <li>{{machine}}</li>
-            {% endfor %}
 
-        {% else %}
-            <p>No tienes ninguna maquina guardada</p>
-        {% endif %}
-        </ul>
-    </p>
+    {% if machines%}
+    <table style="width:70%">
+      <tr>
+        <th>Name</th>
+        <th>IP or HOSTNAME</th>
+        <th>PORT</th>
+      </tr>
+    {% for m in machines%}
+        <tr>
+            <td> {{ m.name }} </td>
+            <td> {{ m.ip }} </td>
+            <td> {{ m.port }} </td>
+        </tr>
+    {% endfor %}
+    </table>
+
+    {% else %}
+        <p>No tienes ninguna maquina guardada</p>
+    {% endif %}
+
     </body>
 </html>
