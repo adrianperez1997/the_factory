@@ -1,4 +1,4 @@
-- hosts: prueba
+- hosts: virtual-ubuntu
   tasks:
   - debug: var=ansible_hostname
     name: hostname

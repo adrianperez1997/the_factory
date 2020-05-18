@@ -4,20 +4,30 @@
 
     <nav>
         <ul>
-            <li> Home </li>
+            <li display="inline"> Home </li>
             <li> Machines </li>
             <li> Networking </li>
             <li> Setup </li>
         </ul>
     </nav>
-     <h1>
+
+    <aside>
+        <blockquote> Primer elemento </blockquote>
+        <blockquote> Segundo elemento </blockquote>
+        <blockquote> Tercero elemento </blockquote>
+    </aside>
+
+    <section>
+        <p>Mi parrafo de ejemplo</p>
+    </section>
+
+    <footer> Mi pie de pagina</footer>
+    <h1>
         Hola Mundo
     </h1>
     <h2><strong> Mis maquinas</strong></h2>
 
     {% if machines%}
-     <form method="GET"><input formaction="/machine/setup/"  type="submit" name="setup" value="value"></form>
-
     <table style="width:70%">
       <tr>
         <th>Name</th>

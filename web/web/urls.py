@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from myApp.views import machines, form, test
+from myApp.views import machines, form, test, home, setup
 
 
 urlpatterns = [
@@ -24,5 +24,7 @@ urlpatterns = [
     path('', machines),
     path('form/', form),
     path('form/test/', test),
+    path('form/setup/', setup),
+    path('machine/setup/', home),
 
 ]

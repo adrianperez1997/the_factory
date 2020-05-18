@@ -1,0 +1,6 @@
+- hosts: virtual-ubuntu
+  tasks:
+  - debug:
+      var: hostvars[inventory_hostname]
+      verbosity: 4
+    name: Display all variables/facts known for a host

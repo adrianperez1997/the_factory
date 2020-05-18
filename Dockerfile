@@ -7,7 +7,8 @@ RUN apt update &&\
     apt install -y ansible &&\
     apt install -y python3-pip &&\
     ansible-galaxy install geerlingguy.docker &&\
-    ansible-galaxy install geerlingguy.pip
+    ansible-galaxy install geerlingguy.pip &&\
+    ansible-galaxy install geerlingguy.repo-epel
 
 
 ADD requirements.txt /
@@ -25,7 +26,8 @@ RUN chmod 600 /keys/miclave
 ADD main.py /
 RUN chmod 700 /main.py
 COPY /web/ /web/
-RUN python3 /web/manage.py migrate
+RUN python3 /web/manage.py makemigrations &&\
+    python3 /web/manage.py migrate
 
 ENTRYPOINT ["python3", "/web/manage.py"]
 #CMD ["python3", "/web/manage.py", "runserver" ]

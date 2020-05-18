@@ -1,53 +1,36 @@
-- name: Instalando docker y weave
-  hosts: virtual
-  become: yes
+- become: true
+  hosts: virtual4
+  name: Instalando docker y weave
+  gather_facts: true
   tasks:
-    - name: Open 6783/tcp port
-      iptables:
-        chain: INPUT
-        protocol: tcp
-        destination_port: 6783
-        jump: ACCEPT
-      become: yes
-
-    - name: Open 6783/udp port
-      iptables:
-        chain: INPUT
-        protocol: udp
-        destination_port: 6783
-        jump: ACCEPT
-      become: yes
-
-    - name: Open 6784/udp port
-      iptables:
-        chain: INPUT
-        protocol: udp
-        destination_port: 6784
-        jump: ACCEPT
-      become: yes
-
-    - import_role:
-        name: geerlingguy.docker
-
-    - include_role:
-        name: geerlingguy.docker
-
-    - import_role:
-        name: geerlingguy.pip
-
-    - include_role:
-        name: geerlingguy.pip
-
-    - name: Install Docker Module for Python
-      pip:
-        name: docker
-
-    - name: Get weave url
-      get_url:
-        url: http://git.io/weave
-        dest: /usr/local/bin/weave
-      become: yes
-
-    - name: change weave permissions
-      command: chmod a+x /usr/local/bin/weave
-      become: yes
+  - name: symlink /usr/bin/python -> /usr/bin/python3
+    raw: |
+      if [ -f /usr/bin/python3 ] && [ ! -f /usr/bin/python ]; then
+        ln --symbolic /usr/bin/python3 /usr/bin/python;
+      fi
+    become: true
+  - import_role:
+      name: geerlingguy.docker
+  - include_role:
+      name: geerlingguy.docker
+  - import_role:
+      name: geerlingguy.repo-epel
+    when: ansible_facts['os_family'] == "CentOS"
+  - include_role:
+      name: geerlingguy.repo-epel
+    when: ansible_facts['os_family'] == "CentOS"
+  - import_role:
+      name: geerlingguy.pip
+  - include_role:
+      name: geerlingguy.pip
+  - name: Install Docker Module for Python
+    pip:
+      name: docker
+  - become: true
+    get_url:
+      dest: /usr/local/bin/weave
+      url: http://git.io/weave
+    name: Get weave url
+  - become: true
+    command: chmod a+x /usr/local/bin/weave
+    name: change weave permissions
