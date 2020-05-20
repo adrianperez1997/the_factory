@@ -1,6 +1,11 @@
-<html>
+<html xmlns="http://www.w3.org/1999/html">
     <body>
 
+    {% include "nav.html" %}
+
+    <table style="width:100%">
+    <tr style="width:100%;">
+        <th style="width:50%;">
     <form action="/form/" method="POST">{% csrf_token %}
         <table>
             {{ form.as_table}}
@@ -12,18 +17,28 @@
     {% if msg %}
         <p>{{ msg }}</p>
     {% endif %}
-    <h2><strong> Mis maquinas</strong></h2>
-    <p>
-        <ul>
-        {% if lista%}
-            {% for machine in lista%}
-                <li>{{machine}}</li>
-            {% endfor %}
+    </th>
 
-        {% else %}
-            <p>No tienes ninguna maquina guardada</p>
-        {% endif %}
-        </ul>
-    </p>
+    <th style="width:50%">
+    <form action="/form/" method="POST">{% csrf_token %}
+        <table>
+            {{ key_form.as_table}}
+        </table>
+        <p><input type="submit" value="Save"></p>
+    </form>
+    <form action="/form/" method="POST">{% csrf_token %}
+        <table>
+            {{ view_key_form.as_table}}
+        </table>
+        <p><input type="submit" value="View"></p>
+    </form>
+    <textarea style="height:300px; width:70%; position:static ;"> {{ key }}</textarea>
+        </th>
+    </tr></table>
+
+     <h2><strong> Mis maquinas</strong></h2>
+
+    {% include "machines_list.html" %}
+
     </body>
 </html>

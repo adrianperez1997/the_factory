@@ -1,41 +1,13 @@
 <html>
     <title>Titulo de mi pestaña</title>
     <body>
-
-    <nav>
-        <ul>
-            <li> Home </li>
-            <li> Machines </li>
-            <li> Networking </li>
-            <li> Setup </li>
-        </ul>
-    </nav>
+    {% include "nav.html" %}
      <h1>
         Hola Mundo
     </h1>
     <h2><strong> Mis maquinas</strong></h2>
 
-    {% if machines%}
-     <form method="GET"><input formaction="/machine/setup/"  type="submit" name="setup" value="value"></form>
-
-    <table style="width:70%">
-      <tr>
-        <th>Name</th>
-        <th>IP or HOSTNAME</th>
-        <th>PORT</th>
-      </tr>
-    {% for m in machines%}
-        <tr>
-            <td> {{ m.name }} </td>
-            <td> {{ m.ip }} </td>
-            <td> {{ m.port }} </td>
-        </tr>
-    {% endfor %}
-    </table>
-
-    {% else %}
-        <p>No tienes ninguna maquina guardada</p>
-    {% endif %}
+    {% include "machines_list.html" %}
 
     </body>
 </html>

@@ -12,3 +12,5 @@ midb.db
 data/inventory.yaml
 bbdd.py
 web/web/__pycache__/
+web/myApp/__pycache__/
+web/myApp/migrations/__pycache__/

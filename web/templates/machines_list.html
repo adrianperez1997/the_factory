@@ -1,0 +1,27 @@
+ {% if machines%}
+    <table style="width:70%">
+      <tr>
+        <th>Name</th>
+        <th>IP or HOSTNAME</th>
+          <th>SO</th>
+          <th>Cores</th>
+          <th>RAM</th>
+          <th>Group</th>
+          <th>STATUS</th>
+      </tr>
+    {% for m in machines%}
+        <tr>
+            <td> {{ m.name }} </td>
+            <td> {{ m.ip }}:{{ m.port }} </td>
+            <td> {{ m.distribution }} - {{ m.version }} </td>
+            <td> {{ m.cores }} </td>
+            <td> {{ m.ram }} </td>
+            <td> {{ m.group }} </td>
+            <td> {{ m.status }} </td>
+        </tr>
+    {% endfor %}
+    </table>
+
+    {% else %}
+        <p>No tienes ninguna maquina guardada</p>
+    {% endif %}
