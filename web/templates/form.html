@@ -4,8 +4,8 @@
     {% include "nav.html" %}
 
     <table style="width:100%">
-    <tr style="width:100%;">
-        <th style="width:50%;">
+    <tr style="width:100%; padding-top:0px;"">
+        <th style="width:50%; padding-top:0px;">
     <form action="/form/" method="POST">{% csrf_token %}
         <table>
             {{ form.as_table}}

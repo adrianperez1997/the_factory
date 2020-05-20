@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from myApp.models import Machines
+from myApp.models import Machines, Group
 from myApp.forms import MachineForm, KeyForm, ViewKeyForm
 from myApp.controller import add_machine, add_to_inventory, run_playbook, new_key
 
@@ -18,22 +18,33 @@ def home(request):
 def machines(request):
 
 
-    machines = Machines.objects.all( )
+    groups = Group.objects.all()
+    main = []
+    for g in groups:
+        machines = Machines.objects.filter(group=g)
+        main.append({'name': g.name, 'machines': machines})
 
-    dict=[]
-    for m in machines:
-
-        dict.append({'name': m.name, 'ip':m.ip, 'port':m.port, 'status':m.status, 'cores':m.cores,
-                              'distribution':m.distribution, 'ram':m.ram, 'version':m.version, 'group':m.group})
-
-    return render(request, 'miplantilla.html',{"machines":machines})
+    return render(request, 'miplantilla.html',{"groups":main})
 
 def form(request):
     msg = ''
     keyfile = 'keys/miclave'
     if request.method=="POST":
-        k = KeyForm(request.POST)
-        vk = ViewKeyForm(request.POST)
+        try:
+            k = KeyForm(request.POST)
+            if k.is_valid():
+                datak = k.cleaned_data
+                new_key(datak['name'])
+        except:
+            k = KeyForm()
+        try:
+            vk = ViewKeyForm(request.POST)
+            if vk.is_valid():
+                datavk = vk.cleaned_data
+                keyfile = datavk['key']
+
+        except:
+            vk = ViewKeyForm()
 
         try:
             miform = MachineForm(request.POST)
@@ -56,31 +67,22 @@ def form(request):
         except:
             miform = MachineForm()
 
-        if k.is_valid():
-            datak = k.cleaned_data
-
-            new_key(datak['name'])
-        if vk.is_valid():
-            datavk = vk.cleaned_data
-
-            keyfile= datavk['key']
-
-        #keyfile = '/keys/miclave'
     else:
         k = KeyForm()
-        vk = ViewKeyForm(request.GET)
+        vk = ViewKeyForm()
         miform=MachineForm()
 
 
     f =open(keyfile,'r')
     key = f.read()
     f.close()
-    machines = Machines.objects.all()
-    dict = []
-    for m in machines:
-        dict.append({'name': m.name, 'ip':m.ip, 'port':m.port, 'status':m.status, 'cores':m.cores, 'distribution':m.distribution,
-                     'ram':m.ram, 'version':m.version, 'group':m.group})
-    return render(request, 'form.html',{"machines": machines,'msg':msg, 'form':miform,'key_form':k, 'view_key_form': vk,
+    groups = Group.objects.all()
+    main = []
+    for g in groups:
+        machines = Machines.objects.filter(group=g)
+        main.append({'name': g.name, 'machines': machines})
+
+    return render(request, 'form.html',{"groups": main,'msg':msg, 'form':miform,'key_form':k, 'view_key_form': vk,
                                         'key':key})
 
 

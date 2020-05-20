@@ -16,9 +16,9 @@ RUN pip3 install -r requirements.txt
 
 RUN mkdir /keys
 
-COPY /keys/* /keys/
+COPY /keys/ /keys/
 
-COPY /data/* /data/
+COPY /data/ /data/
 
 RUN chmod 600 /keys/miclave
 #RUN chmod 644 /keys/miclave.pub
