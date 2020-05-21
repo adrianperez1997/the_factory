@@ -6,7 +6,7 @@
     <table style="width:100%">
     <tr style="width:100%; padding-top:0px;"">
         <th style="width:50%; padding-top:0px;">
-    <form action="/form/" method="POST">{% csrf_token %}
+    <form action="/form/machine_new/" method="POST">{% csrf_token %}
         <table>
             {{ form.as_table}}
         </table>
@@ -20,13 +20,13 @@
     </th>
 
     <th style="width:50%">
-    <form action="/form/" method="POST">{% csrf_token %}
+    <form action="/form/machine_new_key/" method="POST">{% csrf_token %}
         <table>
             {{ key_form.as_table}}
         </table>
         <p><input type="submit" value="Save"></p>
     </form>
-    <form action="/form/" method="POST">{% csrf_token %}
+    <form action="/form/machine_show_key/" method="POST">{% csrf_token %}
         <table>
             {{ view_key_form.as_table}}
         </table>

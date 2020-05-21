@@ -13,16 +13,18 @@ def add_machine(name, ip, key, user, group,port=22):
     """
     if not Machines.objects.filter(name=name):
         add_to_inventory(name, ip, port, key, user, 'data/inventory.yaml', group)
-        g = Group(name=group)
-        g.save()
-        m1 = Machines(name=name,ip=ip,port=port, key=key,user=user, group=g, status='gathering info')
+
+        m1 = Machines(name=name,ip=ip,port=port, key=key,user=user, group_id=group, status='gathering info')
         m1.save()
-        msg = run_playbook(name, 'data/info2.yaml', event_handler=gather_facts_event_handler)
+        run_playbook(name, 'data/info2.yaml', event_handler=gather_facts_event_handler)
         return 'running'
     else:
         return 'Invalid name'
 
-
+def debug(msg):
+    f = open('data/debug.txt', 'a')
+    f.write(msg)
+    f.close()
 def new_key(name):
     keyname = 'keys/'+name
     passphrase= ""
@@ -87,7 +89,11 @@ def gather_facts_event_handler(event):
             #m1.save()
         except:
             pass
-
+    elif event['event']=='runner_on_unreachable':
+        try:
+            Machines.objects.filter(name=event['event_data']['host']).update(status='unreachable')
+        except:
+            pass
     f.close()
 
     return event

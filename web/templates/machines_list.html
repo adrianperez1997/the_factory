@@ -1,7 +1,7 @@
 {% if groups%}
     <h2>MACHINES</h2>
     {% for g in groups%}
-        <h3>{{ g.name }}</h3>
+        <h3><a href="/form/test/?name={{ g.name }}" methods="GET">{{ g.name }}<a/></h3>
         {% if g.machines%}
             <table style="width:70%">
               <tr>

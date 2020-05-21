@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from myApp.models import Machines, Group
-from myApp.forms import MachineForm, KeyForm, ViewKeyForm
+from myApp.forms import MachineForm, KeyForm, ViewKeyForm, PrepareForm
 from myApp.controller import add_machine, add_to_inventory, run_playbook, new_key
 
 import ansible_runner
@@ -21,14 +21,42 @@ def machines(request):
     groups = Group.objects.all()
     main = []
     for g in groups:
-        machines = Machines.objects.filter(group=g)
+        machines = Machines.objects.filter(group_id=g.name)
         main.append({'name': g.name, 'machines': machines})
 
     return render(request, 'miplantilla.html',{"groups":main})
 
-def form(request):
+def machine_new(request):
     msg = ''
-    keyfile = 'keys/miclave'
+    if request.method == "POST":
+        try:
+            miform = MachineForm(request.POST)
+
+            # Si no pongo esto no funciona, informagia...
+            print(miform)
+            if miform.is_valid():
+                data = miform.cleaned_data
+                ip = data['ip']
+                port = 22
+                if ':' in data['ip']:
+                    a = str(data['ip']).split(':')
+                    ip = a[0]
+                    port = a[1]
+
+                # keyfile = data['keys']
+                msg = add_machine(name=data['name'], ip=ip, key=data['keys'], port=port, user=data['user'],
+                                  group=data['group'])
+
+        except:
+            miform = MachineForm()
+
+    else:
+        vk = ViewKeyForm()
+        miform=MachineForm()
+
+    return form(request, new_form=miform, msg=msg)
+
+def machine_new_key(request):
     if request.method=="POST":
         try:
             k = KeyForm(request.POST)
@@ -37,6 +65,13 @@ def form(request):
                 new_key(datak['name'])
         except:
             k = KeyForm()
+    else:
+        k = KeyForm()
+
+    return form(request, key_form=k)
+
+def machine_view_key(request):
+    if request.method == "POST":
         try:
             vk = ViewKeyForm(request.POST)
             if vk.is_valid():
@@ -46,60 +81,39 @@ def form(request):
         except:
             vk = ViewKeyForm()
 
-        try:
-            miform = MachineForm(request.POST)
-
-            # Si no pongo esto no funciona, informagia...
-            print(miform)
-
-            data = miform.cleaned_data
-            ip = data['ip']
-            port = 22
-            if ':' in data['ip']:
-                a = str(data['ip']).split(':')
-                ip = a[0]
-                port = a[1]
-
-            # keyfile = data['keys']
-            msg = add_machine(name=data['name'], ip=ip, key=data['keys'], port=port, user=data['user'],
-                              group=data['group'])
-
-        except:
-            miform = MachineForm()
-
     else:
-        k = KeyForm()
         vk = ViewKeyForm()
-        miform=MachineForm()
+    return form(request, view_key_form=vk, keyfile=keyfile)
 
+def form(request, msg='',key_form= KeyForm(),new_form=MachineForm(), view_key_form=ViewKeyForm(), keyfile='keys/public/nueva.pub' ):
 
     f =open(keyfile,'r')
     key = f.read()
     f.close()
+
     groups = Group.objects.all()
     main = []
     for g in groups:
-        machines = Machines.objects.filter(group=g)
+        machines = Machines.objects.filter(group_id=g.name)
         main.append({'name': g.name, 'machines': machines})
 
-    return render(request, 'form.html',{"groups": main,'msg':msg, 'form':miform,'key_form':k, 'view_key_form': vk,
-                                        'key':key})
+    return render(request, 'form.html',{"groups": main,'msg':msg, 'form':new_form,'key_form':key_form,
+                                        'view_key_form': view_key_form, 'key':key})
 
 
 def test(request):
-    miform = MachineForm(request.POST)
+    main=[]
 
-    # Si no pongo esto no funciona, informagia...
-    print(miform)
+    machines = Machines.objects.filter(group_id=request.GET['name'])
+    main.append({'name': request.GET['name'], 'machines': machines})
 
-    data = miform.cleaned_data
-    machines = Machines.objects.all()
+    if request.method=="GET":
+        p = PrepareForm()
+    elif request.method=="POST":
+        p = PrepareForm(request.POST)
 
-    #add_to_inventory(data['name'], data['ip'], data['port'], data['key'], data['user'])
-    msg = ''
-    #run_playbook(data['name'], 'data/info2.yaml', event_handler=test_event_handler)
 
-    return render(request, 'form.html',{'form':miform, 'msg': msg, 'lista': machines})
+    return render(request, 'machine.html',{"p_form":p,"groups":main})
 
 def setup(request):
     miform = MachineForm(request.POST)

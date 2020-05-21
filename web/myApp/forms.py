@@ -1,4 +1,5 @@
 from django import forms
+from myApp.models import Group
 
 class MachineForm(forms.Form):
     name=forms.CharField(label='Machine name:')
@@ -6,7 +7,12 @@ class MachineForm(forms.Form):
     user =forms.CharField(label='Username:')
     #port =forms.IntegerField()
     keys=forms.FilePathField(path='keys/public/')
-    group=forms.ChoiceField(choices=[('default', 'default2'),('mygroup','mygroup')])
+    choices = []
+    groups = Group.objects.all()
+    for g in groups:
+        choices.append((g.name, g.name))
+
+    group=forms.ChoiceField(choices=choices)
     #key =forms.CharField()
 
 class KeyForm(forms.Form):
@@ -14,3 +20,7 @@ class KeyForm(forms.Form):
 
 class ViewKeyForm(forms.Form):
     key=forms.FilePathField(path='keys/public')
+
+
+class PrepareForm(forms.Form):
+    option = forms.ChoiceField(label="Prepare with: ",choices=[('docker','Docker Server')])
