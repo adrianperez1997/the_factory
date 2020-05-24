@@ -11,7 +11,6 @@ class MachineForm(forms.Form):
     groups = Group.objects.all()
     for g in groups:
         choices.append((g.name, g.name))
-
     group=forms.ChoiceField(choices=choices)
     #key =forms.CharField()
 
