@@ -1,51 +1,13 @@
 <html>
     <title>Titulo de mi pestaña</title>
     <body>
-
-    <nav>
-        <ul>
-            <li display="inline"> Home </li>
-            <li> Machines </li>
-            <li> Networking </li>
-            <li> Setup </li>
-        </ul>
-    </nav>
-
-    <aside>
-        <blockquote> Primer elemento </blockquote>
-        <blockquote> Segundo elemento </blockquote>
-        <blockquote> Tercero elemento </blockquote>
-    </aside>
-
-    <section>
-        <p>Mi parrafo de ejemplo</p>
-    </section>
-
-    <footer> Mi pie de pagina</footer>
-    <h1>
+    {% include "nav.html" %}
+     <h1>
         Hola Mundo
     </h1>
     <h2><strong> Mis maquinas</strong></h2>
 
-    {% if machines%}
-    <table style="width:70%">
-      <tr>
-        <th>Name</th>
-        <th>IP or HOSTNAME</th>
-        <th>PORT</th>
-      </tr>
-    {% for m in machines%}
-        <tr>
-            <td> {{ m.name }} </td>
-            <td> {{ m.ip }} </td>
-            <td> {{ m.port }} </td>
-        </tr>
-    {% endfor %}
-    </table>
-
-    {% else %}
-        <p>No tienes ninguna maquina guardada</p>
-    {% endif %}
+    {% include "machines_list.html" %}
 
     </body>
 </html>

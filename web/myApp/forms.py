@@ -21,5 +21,9 @@ class ViewKeyForm(forms.Form):
     key=forms.FilePathField(path='keys/public')
 
 
+class GroupForm(forms.Form):
+    name=forms.CharField(label='Group name:')
+
+
 class PrepareForm(forms.Form):
     option = forms.ChoiceField(label="Prepare with: ",choices=[('docker','Docker Server')])

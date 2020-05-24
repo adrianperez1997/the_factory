@@ -1,0 +1,15 @@
+<html>
+    <title>New Group</title>
+    <body>
+    {% include "nav.html" %}
+    <form action="/new_group/" method="POST">{% csrf_token %}
+        <p>{{ form.as_p }}</p>
+        <p><input type="submit" value="Add"></p>
+    </form>
+    {% if msg %}
+        <p>{{ msg }}</p>
+    {% endif %}
+
+    {% include "machines_list.html" %}
+    </body>
+</html>
