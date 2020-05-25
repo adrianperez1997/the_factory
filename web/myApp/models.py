@@ -7,12 +7,20 @@ class Group(models.Model):
     ram=models.IntegerField(default=0)
     cores=models.IntegerField(default=0)
 
+class Key(models.Model):
+    name=models.CharField(max_length=50, unique=True, primary_key=True)
+    public_file=models.CharField(max_length=250, default='')
+    private_file=models.CharField(max_length=250, default='')
+    public=models.CharField(max_length=500, default='')
+    private=models.CharField(max_length=500, default='')
+
+
 # Create your models here.
 class Machines(models.Model):
     name=models.CharField(max_length=50, unique=True, primary_key=True)
     ip=models.URLField(default='localhost')
     port=models.IntegerField(blank=True, default=22)
-    key=models.CharField(max_length=250)
+    key=models.ForeignKey(Key, on_delete=models.CASCADE)
     user=models.CharField(max_length=50)
     setup=models.BooleanField(default=False)
     group=models.ForeignKey(Group, on_delete=models.CASCADE, default='default')
@@ -24,3 +32,4 @@ class Machines(models.Model):
 
     def __str__(self):
         return 'Machine: ' + self.name + ' IP: ' + self.ip
+

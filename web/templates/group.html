@@ -1,0 +1,18 @@
+<html>
+    <title>{% for g in groups %}
+                {{ g.name }}
+            {% endfor %}
+    </title>
+    <body>
+    {% include "nav.html" %}
+     <h1><strong>
+        Group: {% for g in groups %}
+                {{ g.name }}
+            {% endfor %}
+    </strong></h1>
+    <h3>Group machines</h3>
+    {% include "machines_list.html" %}
+
+    <h3>Status</h3>
+    </body>
+</html>

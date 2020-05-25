@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from myApp.models import Machines, Group
+from myApp.models import Machines, Group, Key
 from myApp.forms import MachineForm, KeyForm, ViewKeyForm, PrepareForm, GroupForm
 from myApp.controller import add_machine, add_to_inventory, run_playbook, new_key
 
@@ -8,6 +8,8 @@ import yaml
 # Create your views here.
 
 def home(request):
+    k = Key(name='name')
+    k.save()
     groups = Group.objects.all()
     main = []
     for g in groups:
@@ -76,7 +78,7 @@ def machine_view_key(request):
         vk = ViewKeyForm()
     return new_machine(request, view_key_form=vk, keyfile=keyfile)
 
-def new_machine(request, msg='', key_form= KeyForm(), new_form=MachineForm(), view_key_form=ViewKeyForm(), keyfile='keys/public/nueva.pub'):
+def new_machine(request, msg='', key_form= KeyForm(), new_form=MachineForm(), view_key_form=ViewKeyForm(), keyfile='keys/public/default.pub'):
 
     f =open(keyfile,'r')
     key = f.read()
@@ -163,7 +165,24 @@ def test(request):
         p = PrepareForm(request.POST)
 
 
-    return render(request, 'home.html',{"p_form":p,"groups":main})
+    return render(request, 'group.html',{"p_form":p,"groups":main})
+
+
+def test2(request):
+    main=[]
+
+    machines = Machines.objects.filter(name=request.GET['name'])
+    for m in machines:
+        n = m.group_id
+    main.append({'name': n, 'machines': machines})
+
+    if request.method=="GET":
+        p = PrepareForm()
+    elif request.method=="POST":
+        p = PrepareForm(request.POST)
+
+
+    return render(request, 'machine.html',{"p_form":p,"groups":main})
 
 def setup(request):
     miform = MachineForm(request.POST)

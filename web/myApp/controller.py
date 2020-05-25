@@ -1,6 +1,6 @@
 import ansible_runner
 import yaml
-from myApp.models import Machines, Group
+from myApp.models import Machines, Group, Key
 import subprocess
 
 def add_machine(name, ip, key, user, group,port=22):
@@ -12,9 +12,10 @@ def add_machine(name, ip, key, user, group,port=22):
     :return:
     """
     if not Machines.objects.filter(name=name):
-        add_to_inventory(name, ip, port, key, user, 'data/inventory.yaml', group)
+        k = Key.objects.filter(name=key)
+        add_to_inventory(name, ip, port, k.private_file, user, 'data/inventory.yaml', group)
 
-        m1 = Machines(name=name,ip=ip,port=port, key=key,user=user, group_id=group, status='gathering info')
+        m1 = Machines(name=name,ip=ip,port=port, key_id=key,user=user, group_id=group, status='gathering info')
         m1.save()
         run_playbook(name, 'data/info2.yaml', event_handler=gather_facts_event_handler)
         return 'running'
@@ -26,11 +27,23 @@ def debug(msg):
     f.write(msg)
     f.close()
 def new_key(name):
-    keyname = 'keys/'+name
-    passphrase= ""
-    subprocess.run([ "ssh-keygen", "-b", "2048", "-t", "rsa", "-f",keyname, "-q","-N",passphrase])
-    pub_key=keyname + '.pub'
-    subprocess.run([ "cp", pub_key,"keys/public/"])
+    if not Key.objects.filter(name=name):
+
+        keyname = 'keys/'+name
+        passphrase= ""
+        subprocess.run([ "ssh-keygen", "-b", "2048", "-t", "rsa", "-f",keyname, "-q","-N",passphrase])
+        subprocess.run(["mv", keyname, "/keys/private/"])
+        pub_key=keyname + '.pub'
+        subprocess.run(["mv", pub_key,"/keys/public/"])
+
+        public_file = '/keys/public/' + name + '.pub'
+        private_file = '/keys/private/' + name
+        public = open(public_file, 'r').read()
+        private = open(private_file, 'r').read()
+
+        k = Key(name=name, public_file=public_file, private_file=private_file,
+                public=public, private=private)
+        k.save()
 
 
 def add_to_inventory(name, ip, port, key, user, inventory, group):
