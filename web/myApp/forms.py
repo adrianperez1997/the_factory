@@ -1,6 +1,17 @@
 from django import forms
 from myApp.models import Group, Key
 
+class EditMachineForm(forms.Form):
+    ip =forms.CharField(required=False, label='Hostname:', help_text='You can specify a different port example.com:22')
+    user =forms.CharField(required=False, label='Username:')
+    choices = []
+    key = Key.objects.all()
+
+    for k in key:
+        choices.append((k.name, k.name))
+
+    keys = forms.ChoiceField(required=False, choices=choices)
+
 class MachineForm(forms.Form):
     name=forms.CharField(label='Machine name:')
     ip =forms.CharField(label='Hostname:', help_text='You can specify a different port example.com:22')

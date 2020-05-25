@@ -16,5 +16,11 @@
     </strong></h1>
     {% include "machines_list.html" %}
 
+
+    {% if edit_form %}
+        <form action="/machine/edit/"> <ul>{{ edit_form.as_ul }}</ul>
+            <input type="submit" value="Add"></form>
+
+    {% endif %}
     </body>
 </html>

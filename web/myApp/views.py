@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from myApp.models import Machines, Group, Key
-from myApp.forms import MachineForm, KeyForm, ViewKeyForm, PrepareForm, GroupForm
+from myApp.forms import MachineForm, KeyForm, ViewKeyForm, PrepareForm, GroupForm, EditMachineForm
 from myApp.controller import add_machine, add_to_inventory, run_playbook, new_key
 
 import ansible_runner
@@ -150,6 +150,8 @@ def new_group(request):
 
 
 
+def machine_edit(request):
+    return test2(request)
 
 
 
@@ -177,12 +179,12 @@ def test2(request):
     main.append({'name': n, 'machines': machines})
 
     if request.method=="GET":
-        p = PrepareForm()
+        p = EditMachineForm()
     elif request.method=="POST":
-        p = PrepareForm(request.POST)
+        p = EditMachineForm(request.POST)
 
 
-    return render(request, 'machine.html',{"p_form":p,"groups":main})
+    return render(request, 'machine.html',{"edit_form":p,"groups":main})
 
 def setup(request):
     miform = MachineForm(request.POST)

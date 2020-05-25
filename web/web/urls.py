@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from myApp.views import new_machine, test, test2, home, setup, machine_new_key, machine_new, machine_view_key, new_group
+from myApp.views import new_machine, test, test2, machine_edit, home, setup, machine_new_key, machine_new, machine_view_key, new_group
 
 
 urlpatterns = [
@@ -28,6 +28,7 @@ urlpatterns = [
     path('new_group/', new_group),
     path('group/', test),
     path('machine/', test2),
+    path('machine/edit/', machine_edit),
 
 
     path('form/test/', test),
