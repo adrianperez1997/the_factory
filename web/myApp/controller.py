@@ -12,10 +12,18 @@ def add_machine(name, ip, key, user, group,port=22):
     :return:
     """
     if not Machines.objects.filter(name=name):
-        k = Key.objects.filter(name=key)
-        add_to_inventory(name, ip, port, k.private_file, user, 'data/inventory.yaml', group)
+        key_file = '/keys/private/miclave'
+        try:
+            k = Key.objects.filter(name=key)
+            for key in k:
+                key_file=key.private_file
 
-        m1 = Machines(name=name,ip=ip,port=port, key_id=key,user=user, group_id=group, status='gathering info')
+        except:
+            key_file='/keys/private/miclave'
+
+        add_to_inventory(name, ip, port,key_file, user, 'data/inventory.yaml', group)
+
+        m1 = Machines(name=name,ip=ip,port=port, key=key,user=user, group_id=group, status='gathering info')
         m1.save()
         run_playbook(name, 'data/info2.yaml', event_handler=gather_facts_event_handler)
         return 'running'
