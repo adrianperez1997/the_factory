@@ -20,7 +20,7 @@ COPY /keys/ /keys/
 
 COPY /data/ /data/
 
-RUN chmod 600 /keys/miclave
+#RUN chmod 600 /keys/miclave
 #RUN chmod 644 /keys/miclave.pub
 
 ADD main.py /

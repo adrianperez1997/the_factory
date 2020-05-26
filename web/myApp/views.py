@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from myApp.models import Machines, Group, Key
 from myApp.forms import MachineForm, KeyForm, ViewKeyForm, PrepareForm, GroupForm, EditMachineForm
-from myApp.controller import add_machine, add_to_inventory, run_playbook, new_key
+from myApp.controller import add_machine, add_to_inventory, run_playbook, new_key, edit_machine, debug, delete_machine, test_machine
 
 import ansible_runner
 import yaml
@@ -138,20 +138,50 @@ def new_group(request):
 
 
 
+def machine_delete(request):
+    if request.method=="GET":
+        delete_machine(request.GET["name"])
+
+    return machine(request)
 
 
+def machine_test(request):
+    if request.method=="GET":
+        test_machine(request.GET["name"])
 
-
-
-
-
-
+    return machine(request)
 
 
 
 
 def machine_edit(request):
-    return test2(request)
+    msg = ''
+    if request.method == "GET":
+        try:
+            miform = EditMachineForm(request.GET)
+            if miform.is_valid():
+                data = miform.cleaned_data
+
+                ip = data['ip']
+                port = 22
+                if ':' in data['ip']:
+                    a = str(data['ip']).split(':')
+                    ip = a[0]
+                    port = a[1]
+                edit_machine(name=request.GET['name'], ip=ip, key=data['keys'], port=port, user=data['user'])
+                debug('fuera\n')
+            else:
+                debug('not valid')
+                # keyfile = data['keys']
+
+
+        except:
+            miform = EditMachineForm()
+
+    else:
+        miform=EditMachineForm()
+
+    return machine(request, edit_form=miform, msg=msg)
 
 
 
@@ -170,21 +200,17 @@ def test(request):
     return render(request, 'group.html',{"p_form":p,"groups":main})
 
 
-def test2(request):
-    main=[]
-
-    machines = Machines.objects.filter(name=request.GET['name'])
-    for m in machines:
-        n = m.group_id
-    main.append({'name': n, 'machines': machines})
-
+def machine(request, msg='', edit_form=EditMachineForm()):
     if request.method=="GET":
-        p = EditMachineForm()
-    elif request.method=="POST":
-        p = EditMachineForm(request.POST)
+        main=[]
+        machines = Machines.objects.filter(name=request.GET['name'])
+        n = 'default'
+        for m in machines:
+            n = m.group_id
+        main.append({'name': n, 'machines': machines})
 
 
-    return render(request, 'machine.html',{"edit_form":p,"groups":main})
+        return render(request, 'machine.html',{"edit_form":edit_form,"groups":main})
 
 def setup(request):
     miform = MachineForm(request.POST)

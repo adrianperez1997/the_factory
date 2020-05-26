@@ -18,8 +18,16 @@
 
 
     {% if edit_form %}
-        <form action="/machine/edit/"> <ul>{{ edit_form.as_ul }}</ul>
-            <input type="submit" value="Add"></form>
+        <form action="/machine/edit/" method="GET">
+            <ul>{{ edit_form.as_ul }}</ul>
+            {% for g in groups %}
+                {% for m in g.machines %}
+                    <input type="text" name="name"  value="{{ m.name }}" hidden="True">
+                {% endfor %}
+            {% endfor %}
+            <input type="submit" value="Edit"/>
+            <input type="submit" formaction="/machine/test/" value="Test"/>
+            <input type="submit" formaction="/machine/delete/" value="Delete"/></form>
 
     {% endif %}
     </body>

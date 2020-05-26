@@ -3,6 +3,41 @@ import yaml
 from myApp.models import Machines, Group, Key
 import subprocess
 
+
+def delete_machine(name):
+    machine = Machines.objects.filter(name=name)
+    machine.delete()
+
+def test_machine(name):
+    machine = Machines.objects.filter(name=name)
+    machine.update(status='gathering info')
+    run_playbook(name, 'data/info2.yaml', event_handler=gather_facts_event_handler)
+
+def edit_machine(name, ip=None, key=None, user=None,port=22):
+    try:
+        machine = Machines.objects.filter(name=name)
+        keys = Key.objects.filter(name=key)
+        for k in keys:
+            keyfile=k.private_file
+
+        if ip and user:
+            machine.update(ip=ip, key=key, user=user, port=port)
+            r = edit_inventory(name=name, inventory='data/inventory.yaml',ip=ip, key=keyfile, port=port, user=user)
+        elif ip:
+            machine.update(ip=ip, key=key, port=port)
+            r = edit_inventory(name=name,inventory='data/inventory.yaml', ip=ip, key=keyfile, port=port)
+        elif user:
+            machine.update(key=key, user=user)
+            r = edit_inventory(name=name, inventory='data/inventory.yaml', key=keyfile, user=user)
+        else:
+            machine.update(key=key)
+            r = edit_inventory(name=name, inventory='data/inventory.yaml', key=keyfile)
+
+    except:
+        return -1
+
+    return 0
+
 def add_machine(name, ip, key, user, group,port=22):
     """
     comprueba name valid
@@ -53,6 +88,30 @@ def new_key(name):
                 public=public, private=private)
         k.save()
 
+def edit_inventory(name, inventory, ip=None, port=None, key=None, user=None):
+    try:
+        with open(inventory) as f:
+            o = yaml.load(f, Loader=yaml.FullLoader)
+            f.close()
+            if name in o['all']['hosts']:
+                args = {}
+                if ip:
+                    args.update({'ansible_host': ip})
+                    args.update({'ansible_port': port})
+                if key:
+                    args.update({'ansible_ssh_private_key_file': key})
+                if user:
+                    args.update({'ansible_user': user})
+                o['all']['hosts'][name].update(args)
+
+                s = open(inventory, 'w')
+                yaml.dump(o, s)
+                s.close()
+            else:
+                return -1
+    except FileNotFoundError:
+        return -1
+    return 0
 
 def add_to_inventory(name, ip, port, key, user, inventory, group):
     try:
