@@ -1,4 +1,4 @@
-- hosts: bfd
+- hosts: centos3
   tasks:
   - debug:
       var: hostvars[inventory_hostname]

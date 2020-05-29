@@ -7,7 +7,7 @@ RUN apt update &&\
     apt install -y ansible &&\
     apt install -y python3-pip &&\
     ansible-galaxy install geerlingguy.docker &&\
-    ansible-galaxy install geerlingguy.pip &&\
+    ansible-galaxy install andrewrothstein.python &&\
     ansible-galaxy install geerlingguy.repo-epel
 
 

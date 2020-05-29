@@ -1,11 +1,21 @@
 import ansible_runner
 import yaml
-from myApp.models import Machines, Group, Key
+from myApp.models import Machines, Group, Key, Run
 import subprocess
+import logging
 
+logging.basicConfig(filename='data/debug.log', format='%(asctime)s - %(levelname)s: %(funcName)s - %(message)s', datefmt='[%d/%b/%y %H:%M:%S]')
+
+
+
+def run_group(name, option):
+    machines = Machines.objects.filter(group_id=name).update(status='Preparing...')
+    run = Run(playbook='data/docker.yaml', machines=machines)
+    run_playbook(name, 'data/docker.yaml', ident=run.ident, event_handler=docker_event_handler2)
 
 def delete_machine(name):
     machine = Machines.objects.filter(name=name)
+    delete_from_inventory(name=name, inventory='data/inventory.yaml')
     machine.delete()
 
 def test_machine(name):
@@ -66,9 +76,10 @@ def add_machine(name, ip, key, user, group,port=22):
         return 'Invalid name'
 
 def debug(msg):
-    f = open('data/debug.txt', 'a')
+    f = open('data/debug.log', 'a')
     f.write(msg)
     f.close()
+
 def new_key(name):
     if not Key.objects.filter(name=name):
 
@@ -113,7 +124,25 @@ def edit_inventory(name, inventory, ip=None, port=None, key=None, user=None):
         return -1
     return 0
 
+def delete_from_inventory(name, inventory):
+    try:
+        with open(inventory) as f:
+            o = yaml.load(f, Loader=yaml.FullLoader)
+            f.close()
+            if name in o['all']['hosts']:
+                o['all']['hosts'].pop(name)
+
+                s = open(inventory, 'w')
+                yaml.dump(o, s)
+                s.close()
+            else:
+                return -1
+    except FileNotFoundError:
+        return -1
+    return 0
+
 def add_to_inventory(name, ip, port, key, user, inventory, group):
+    o={}
     try:
         with open(inventory) as f:
             o = yaml.load(f, Loader=yaml.FullLoader)
@@ -138,24 +167,78 @@ def add_to_inventory(name, ip, port, key, user, inventory, group):
 
     return 0
 
+def rewrite_inventory():
+    machines = Machines.objects.all()
+    for m in machines:
+        #k = Key.objects.filter(name=m.key)
+        add_to_inventory(name=m.name, ip=m.ip, port=m.port, key=m.key.private_file, user=m.user,
+                         inventory='data/inventory.yaml', group=m.group_id)
+
 def general_status_handler(status, runner_config=None):
+    logging.info(status['status'])
     f = open('data/debug.txt','a')
-    f.write('status: '+str(status)+ '\n')
+    f.write('status: '+str(status['status'])+ '\n')
     f.close()
     print('status: '+str(status))
     return status
 
 def general_event_handler(event):
+    logging.info(event['stdout'])
     f = open('data/debug.txt','a')
     f.write('event: '+str(event)+ '\n')
     print('event: '+str(event))
     f.close()
 
     return event
+def docker_event_handler2(event):
+    try:
+        logging.info(str(event['stdout']))
+        Machines.objects.filter(name=event['event_data']['host']).update(event=event['event'])
+    except Exception as e:
+        logging.error('Error: '+ str(e))
+
+def docker_event_handler(event):
+    logging.info(str(event['stdout']))
+    f = open('data/debug.txt', 'a')
+    f.write('event: ' + str(event['stdout']) + '\n')
+    f.close()
+    print('event: ' + str(event))
+    if event['event'] == 'runner_on_ok':
+        try:
+            dist = str(event['event_data']['res']['ansible_facts']['ansible_distribution'])
+            version = str(event['event_data']['res']['ansible_facts']['ansible_distribution_release'])
+            cores = int(event['event_data']['res']['ansible_facts']['ansible_processor_cores'])
+            ram = int(event['event_data']['res']['ansible_facts']['ansible_memtotal_mb'])
+            Machines.objects.filter(name=event['event_data']['host']).update(status='ok')
+            # m1 = Machines(name=event['event_data']['host'],cores=cores,version=version, distribution=dist, ram=ram)
+            # m1.save()
+        except:
+            pass
+    elif event['event'] == 'runner_on_unreachable':
+        try:
+            Machines.objects.filter(name=event['event_data']['host']).update(status='unreachable')
+        except:
+            pass
+    elif event['event'] == 'runner_on_failure':
+        try:
+            Machines.objects.filter(name=event['event_data']['host']).update(status='failure')
+        except:
+            pass
+    elif event['event'] == 'playbook_on_stats':
+        try:
+            f = open('data/debug.txt', 'a')
+            f.write('FINAL: ' + str(event['stdout']) + '\n')
+            f.close()
+        except:
+            pass
+
+    return event
 
 def gather_facts_event_handler(event):
+    logging.info(str(event['stdout']))
     f = open('data/debug.txt','a')
-    f.write('event: '+str(event)+ '\n')
+    f.write('event: '+str(event['stdout'])+ '\n')
+    f.close()
     print('event: '+str(event))
     if event['event']=='runner_on_ok':
         try:
@@ -174,15 +257,21 @@ def gather_facts_event_handler(event):
             Machines.objects.filter(name=event['event_data']['host']).update(status='unreachable')
         except:
             pass
-    f.close()
 
+    elif event['event'] == 'playbook_on_stats':
+        try:
+            f = open('data/debug.txt', 'a')
+            f.write('FINAL: ' + str(event['stdout']) + '\n')
+            f.close()
+        except:
+            pass
     return event
 
-def run_playbook(machine_name, playbook, private_data_dir='.', inventory='data/inventory.yaml', ident='00001',event_handler=general_event_handler, status_handler=general_status_handler, json_mode=True):
+def run_playbook(group_name, playbook, private_data_dir='.', inventory='data/inventory.yaml', ident='00001', event_handler=general_event_handler, status_handler=general_status_handler, json_mode=True):
     try:
         with open(playbook) as f:
             o = yaml.load(f, Loader=yaml.FullLoader)
-            o[-1]['hosts'] = machine_name
+            o[-1]['hosts'] = group_name
             s = open(playbook, 'w')
             yaml.dump(o, s)
             s.close()

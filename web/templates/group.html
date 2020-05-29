@@ -14,7 +14,13 @@
     {% include "machines_list.html" %}
 
     {% if p_form %}
-        <p>{{ p_form.as_p }}</p>
+        <form>
+            <p>{{ p_form.as_p }}</p>
+            {% for g in groups %}
+                    <input type="text" name="name"  value="{{ g.name }}" hidden="True">
+                {% endfor %}
+            <input type="submit" formaction="/group/run/" value="Run"/>
+        </form>
     {% endif %}
     <h3>Status</h3>
     </body>

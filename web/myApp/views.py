@@ -1,11 +1,15 @@
 from django.shortcuts import render
 from myApp.models import Machines, Group, Key
 from myApp.forms import MachineForm, KeyForm, ViewKeyForm, PrepareForm, GroupForm, EditMachineForm
-from myApp.controller import add_machine, add_to_inventory, run_playbook, new_key, edit_machine, debug, delete_machine, test_machine
+from myApp.controller import *
+#add_machine, add_to_inventory, run_group, run_playbook, new_key, edit_machine, debug, delete_machine, test_machine
 
 import ansible_runner
 import yaml
 # Create your views here.
+
+
+
 
 def home(request):
     k = Key(name='name')
@@ -44,7 +48,6 @@ def machine_new(request):
             miform = MachineForm()
 
     else:
-        vk = ViewKeyForm()
         miform=MachineForm()
 
     return new_machine(request, new_form=miform, msg=msg)
@@ -169,9 +172,8 @@ def machine_edit(request):
                     ip = a[0]
                     port = a[1]
                 edit_machine(name=request.GET['name'], ip=ip, key=data['keys'], port=port, user=data['user'])
-                debug('fuera\n')
             else:
-                debug('not valid')
+                logging.error('Form not valid')
                 # keyfile = data['keys']
 
 
@@ -184,6 +186,10 @@ def machine_edit(request):
     return machine(request, edit_form=miform, msg=msg)
 
 
+def group_run(request):
+    if request.method=="GET":
+        run_group(name=request.GET["name"],option=request.GET["option"] )
+    return test(request)
 
 def test(request):
     main=[]

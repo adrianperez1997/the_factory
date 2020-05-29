@@ -1,14 +1,12 @@
 - become: true
-  hosts: virtual4
-  name: Instalando docker y weave
   gather_facts: true
+  hosts: default
+  name: Instalando docker y weave
   tasks:
-  - name: symlink /usr/bin/python -> /usr/bin/python3
-    raw: |
-      if [ -f /usr/bin/python3 ] && [ ! -f /usr/bin/python ]; then
-        ln --symbolic /usr/bin/python3 /usr/bin/python;
-      fi
-    become: true
+  - become: true
+    name: symlink /usr/bin/python -> /usr/bin/python3
+    raw: "if [ -f /usr/bin/python3 ] && [ ! -f /usr/bin/python ]; then\n  ln --symbolic\
+      \ /usr/bin/python3 /usr/bin/python;\nfi\n"
   - import_role:
       name: geerlingguy.docker
   - include_role:
@@ -20,9 +18,9 @@
       name: geerlingguy.repo-epel
     when: ansible_facts['os_family'] == "CentOS"
   - import_role:
-      name: geerlingguy.pip
+      name: andrewrothstein.python
   - include_role:
-      name: geerlingguy.pip
+      name: andrewrothstein.python
   - name: Install Docker Module for Python
     pip:
       name: docker
