@@ -2,7 +2,7 @@ version: '3'
 services:
   tfg:
     build: .
-    command: migrate
+    command: runserver 0.0.0.0:8000
     volumes:
       - ./data:/data
       - ./web/:/web/

@@ -188,7 +188,17 @@ def machine_edit(request):
 
 def group_run(request):
     if request.method=="GET":
-        run_group(name=request.GET["name"],option=request.GET["option"] )
+        all_machines = Machines.objects.filter(group_id=request.GET['name'])
+        machines = []
+        if 'All' in request.GET:
+            for m in all_machines:
+                machines.append(m.name)
+        else:
+            for m in all_machines:
+                if request.GET['check']==m.name:
+                    machines.append(m.name)
+
+        run_group(name=request.GET["name"],option=request.GET["option"], machines_names=machines)
     return test(request)
 
 def test(request):
@@ -203,7 +213,8 @@ def test(request):
         p = PrepareForm(request.POST)
 
 
-    return render(request, 'group.html',{"p_form":p,"groups":main})
+    runs = Run.objects.filter(group_id=request.GET['name'], finished=False)
+    return render(request, 'group.html',{"p_form":p,"groups":main, 'runs': runs})
 
 
 def machine(request, msg='', edit_form=EditMachineForm()):

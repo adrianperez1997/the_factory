@@ -8,10 +8,21 @@ logging.basicConfig(filename='data/debug.log', format='%(asctime)s - %(levelname
 
 
 
-def run_group(name, option):
-    machines = Machines.objects.filter(group_id=name).update(status='Preparing...')
-    run = Run(playbook='data/docker.yaml', machines=machines)
-    run_playbook(name, 'data/docker.yaml', ident=run.ident, event_handler=docker_event_handler2)
+def run_group(name, option, machines_names):
+    machines = Machines.objects.filter(group_id=name)
+    #machines.update(status='Preparing...')
+    run = Run(playbook='data/docker.yaml',group_id=name)
+    run.save()
+
+    inventory_filename = 'data/cache/inventory_' + str(run.ident) + '.yaml'
+    for m in machines:
+        if m.name in machines_names:
+            m.status = 'Preparing...'
+            add_to_inventory(name=m.name, port=m.port, ip=m.ip, key=m.key.private_file, group=m.group_id,
+                             user=m.user, inventory=inventory_filename)
+            run.machines.add(m)
+
+    run_playbook(name, 'data/docker.yaml', inventory=inventory_filename, ident=str(run.ident), event_handler=docker_event_handler2)
 
 def delete_machine(name):
     machine = Machines.objects.filter(name=name)
@@ -176,6 +187,11 @@ def rewrite_inventory():
 
 def general_status_handler(status, runner_config=None):
     logging.info(status['status'])
+    try:
+        Run.objects.filter(ident=int(status['runner_ident'])).update(status=status['status'])
+    except:
+        logging.error('Not run instance found')
+
     f = open('data/debug.txt','a')
     f.write('status: '+str(status['status'])+ '\n')
     f.close()
@@ -193,9 +209,63 @@ def general_event_handler(event):
 def docker_event_handler2(event):
     try:
         logging.info(str(event['stdout']))
-        Machines.objects.filter(name=event['event_data']['host']).update(event=event['event'])
+        r = Run.objects.filter(ident=int(event['runner_ident']))
+        stdout = ''
+        for run in r:
+            stdout = run.stdout + event['stdout']
+        Run.objects.filter(ident=int(event['runner_ident'])).update(stdout=stdout)
+
     except Exception as e:
         logging.error('Error: '+ str(e))
+
+    try:
+        Machines.objects.filter(name=event['event_data']['host']).update(event=event['event'])
+    except Exception as e:
+        logging.error('Error: '+str(e))
+
+    if event['event'] == 'runner_on_ok':
+        try:
+            Machines.objects.filter(name=event['event_data']['host']).update(status='running')
+
+        except Exception as e:
+            logging.error('Error: '+ e)
+
+    if event['event'] == 'runner_on_start':
+        try:
+            Machines.objects.filter(name=event['event_data']['host']).update(status='running')
+
+        except Exception as e:
+            logging.error('Error: '+ e)
+
+    elif event['event'] == 'playbook_on_stats':
+
+        if event['event_data']['ok'] != {}:
+            for ok in event['event_data']['ok'].keys():
+                try:
+                    Machines.objects.filter(name=ok).update(status='ok')
+                except Exception as e:
+                    logging.error('Error: ' + e)
+
+        if event['event_data']['dark'] != {}:
+            for dark in event['event_data']['dark'].keys():
+                try:
+                    Machines.objects.filter(name=dark).update(status='unreachable')
+                except Exception as e:
+                    logging.error('Error: ' + e)
+
+        if event['event_data']['failures'] != {}:
+            for failures in event['event_data']['failures'].keys():
+                try:
+                    Machines.objects.filter(name=failures).update(status='fails')
+                except Exception as e:
+                    logging.error('Error: ' + e)
+
+
+
+        f = open('data/debug.txt', 'a')
+        f.write('FINAL: ' + str(event) + '\n')
+        f.close()
+
 
 def docker_event_handler(event):
     logging.info(str(event['stdout']))
@@ -267,7 +337,7 @@ def gather_facts_event_handler(event):
             pass
     return event
 
-def run_playbook(group_name, playbook, private_data_dir='.', inventory='data/inventory.yaml', ident='00001', event_handler=general_event_handler, status_handler=general_status_handler, json_mode=True):
+def run_playbook(group_name, playbook, private_data_dir='.', inventory='data/inventory.yaml', ident='default_ident', event_handler=general_event_handler, status_handler=general_status_handler, json_mode=True):
     try:
         with open(playbook) as f:
             o = yaml.load(f, Loader=yaml.FullLoader)

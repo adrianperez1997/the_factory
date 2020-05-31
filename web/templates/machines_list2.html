@@ -1,0 +1,45 @@
+{% if groups%}
+    {% for g in groups%}
+        <h3><a href="/group/?name={{ g.name }}" methods="GET">{{ g.name }}<a/></h3>
+        {% if g.machines%}
+            <table style="width:70%">
+              <tr>
+                <th>Name</th>
+                <th>IP or HOSTNAME</th>
+                  <th>SO</th>
+                  <th>Cores</th>
+                  <th>RAM</th>
+                  <th>Group</th>
+                  <th>STATUS</th>
+                  <th><input type="checkbox" name="All" onClick="toggle(this)" value="True"></th>
+              </tr>
+            {% for m in g.machines%}
+                <tr>
+                    <td><a href="/machine/?name={{ m.name }}" methods="GET">{{ m.name }}<a/></td>
+                    <td> {{ m.ip }}:{{ m.port }} </td>
+                    <td> {{ m.distribution }} - {{ m.version }} </td>
+                    <td> {{ m.cores }} </td>
+                    <td> {{ m.ram }} </td>
+                    <td> {{ m.group.name }} </td>
+                    <td> {{ m.status }} </td>
+                    <td><input type="checkbox" name="check" id="{{ m.name }}" value="{{ m.name }}"></td>
+                </tr>
+            {% endfor %}
+            </table>
+
+            {% else %}
+                <p>No tienes ninguna maquina guardada</p>
+            {% endif %}
+    {% endfor %}
+{% else %}
+    <p>No tienes ningun grupo guardado</p>
+{% endif %}
+
+<script language="JavaScript">
+function toggle(source) {
+  checkboxes = document.getElementsByName('check');
+  for(var i=0, n=checkboxes.length;i<n;i++) {
+    checkboxes[i].checked = source.checked;
+  }
+}
+</script>
