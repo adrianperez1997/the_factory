@@ -1,5 +1,7 @@
 {% if runs %}
+    <h3>My runs</h3>
     {% for run in runs %}
+        <p>-------------------------------------------------------------------------------</p>
          <table style="width:50%">
                 <tr>
                     <th><strong>Play</strong></th>
@@ -29,6 +31,10 @@
 
 </p>
         <textarea style="height:300px; width:70%; position:static ;">{{ run.stdout}}</textarea>
+<form action="/group/delete_run/">
+    <input type="text" name="name"  value="{{ run.group_id }}" hidden="True">
+    <input type="text" name="delete"  value="{{ run.ident }}" hidden="True">
+    <input type="submit" value="Delete"></form>
     {% endfor %}
 {% endif %}
 

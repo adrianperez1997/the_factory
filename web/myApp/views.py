@@ -185,6 +185,14 @@ def machine_edit(request):
 
     return machine(request, edit_form=miform, msg=msg)
 
+def delete_run(request):
+    if request.method=="GET":
+        try:
+            Run.objects.filter(ident=int(request.GET['delete'])).update(finished=True)
+        except Exception as e:
+            logging.error('Error: ' + str(e))
+
+    return test(request)
 
 def group_run(request):
     if request.method=="GET":
@@ -193,6 +201,8 @@ def group_run(request):
         if 'All' in request.GET:
             for m in all_machines:
                 machines.append(m.name)
+        elif not 'check' in request.GET:
+            return test(request)
         else:
             for m in all_machines:
                 if request.GET['check']==m.name:
