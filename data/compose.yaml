@@ -1,0 +1,23 @@
+- become: false
+  hosts: gruponuevo
+  name: Deploy docker-compose
+  tasks:
+  - file:
+      mode: '0755'
+      path: deploys/
+      state: directory
+    name: Create deploys directory if it does not exist
+  - copy:
+      dest: deploys/name.yml
+      group: '{{ ansible_env.USER }}'
+      mode: '0644'
+      owner: '{{ ansible_env.USER }}'
+      src: composes/name.yml
+    name: Copy file with owner and permissions
+  - become: true
+    command: usermod -aG docker {{ ansible_env.USER }}
+    name: Deploy docker-compose
+  - args:
+      chdir: deploys/
+    command: docker-compose -f name.yml up -d
+    name: Deploy docker-compose
