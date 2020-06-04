@@ -11,7 +11,7 @@ logging.basicConfig(filename='data/debug.log', format='%(asctime)s - %(levelname
 def run_group(name, option, machines_names):
     machines = Machines.objects.filter(group_id=name)
     #machines.update(status='Preparing...')
-    run = Run(playbook='data/docker.yaml',group_id=name)
+    run = Run(group_id=name)
     run.save()
 
     inventory_filename = 'data/cache/inventory_' + str(run.ident) + '.yaml'
@@ -22,7 +22,14 @@ def run_group(name, option, machines_names):
                              user=m.user, inventory=inventory_filename)
             run.machines.add(m)
 
-    run_playbook(name, 'data/docker.yaml', inventory=inventory_filename, ident=str(run.ident), event_handler=docker_event_handler2)
+    if option == 'docker':
+        run.playbook='data/docker.yaml'
+        run_playbook(name, 'data/docker.yaml', inventory=inventory_filename, ident=str(run.ident), event_handler=docker_event_handler2)
+    elif option == 'compose':
+        run.playbook='data/compose.yaml'
+        run_playbook(name, 'data/compose.yaml', inventory=inventory_filename, ident=str(run.ident),
+                     event_handler=docker_event_handler2)
+
 
 def delete_machine(name):
     machine = Machines.objects.filter(name=name)

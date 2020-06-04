@@ -46,4 +46,4 @@ class GroupForm(forms.Form):
 
 
 class PrepareForm(forms.Form):
-    option = forms.ChoiceField(label="Prepare with: ",choices=[('docker','Docker Server')])
+    option = forms.ChoiceField(label="Prepare with: ",choices=[('docker','Docker Server'),('compose','docker-compose')])

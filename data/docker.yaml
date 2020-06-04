@@ -11,6 +11,8 @@
       name: geerlingguy.docker
   - include_role:
       name: geerlingguy.docker
+    vars:
+      - docker_install_compose: true
   - import_role:
       name: geerlingguy.repo-epel
     when: ansible_facts['os_family'] == "CentOS"
@@ -23,7 +25,10 @@
       name: andrewrothstein.python
   - name: Install Docker Module for Python
     pip:
-      name: docker
+      name:
+      - pip
+      - docker
+      state: latest
   - become: true
     get_url:
       dest: /usr/local/bin/weave
