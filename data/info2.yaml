@@ -1,4 +1,4 @@
-- hosts: centos3
+- hosts: centos1
   tasks:
   - debug:
       var: hostvars[inventory_hostname]
