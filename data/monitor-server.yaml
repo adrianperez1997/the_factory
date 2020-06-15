@@ -1,0 +1,49 @@
+- become: true
+  gather_facts: true
+  hosts: monitor-server
+  name: Instalando influxdb
+  tasks:
+  - include_role:
+      name: rossmcdonald.influxdb
+  - include_role:
+      name: cloudalchemy.grafana
+    vars:
+    - grafana_security:
+        admin_password: admin
+        admin_user: admin
+    - grafana_datasources:
+      - database: telegraf
+        ds_type: influxdb
+        ds_url: http://localhost:8086
+        grafana_password: admin
+        grafana_url: https://localhost:3000
+        grafana_user: admin
+        name: influxdb
+        org_id: '1'
+        time_interval: '>10s'
+        type: influxdb
+        url: http://localhost:8086
+    - grafana_dashboards:
+      - dashboard_id: 61
+        datasource: influxdb
+        revision_id: 3
+  - include_role:
+      name: rossmcdonald.telegraf
+    vars:
+    - telegraf_install_version: stable
+  - copy:
+      dest: /etc/telegraf/telegraf.conf
+      src: data/telegraf.conf
+    name: Copy file with owner and permissions
+  - group:
+      name: docker
+      state: present
+    name: Ensure group "somegroup" exists
+  - name: Add the user 'johnd' with a specific uid and a primary group of 'admin'
+    user:
+      group: docker
+      name: telegraf
+  - name: Restart service telegraf, in all cases
+    service:
+      name: telegraf
+      state: restarted

@@ -25,6 +25,12 @@ def run_group(name, option, machines_names):
     if option == 'docker':
         run.playbook='data/docker.yaml'
         run_playbook(name, 'data/docker.yaml', inventory=inventory_filename, ident=str(run.ident), event_handler=docker_event_handler2)
+
+    elif option == 'monitor':
+        run.playbook='data/monitor-server.yaml'
+        run_playbook(name, 'data/monitor-server.yaml', inventory=inventory_filename, ident=str(run.ident),
+                     event_handler=docker_event_handler2)
+
     elif option == 'compose':
         run.playbook='data/compose.yaml'
         run_playbook(name, 'data/compose.yaml', inventory=inventory_filename, ident=str(run.ident),

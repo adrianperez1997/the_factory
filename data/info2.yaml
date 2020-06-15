@@ -1,4 +1,4 @@
-- hosts: centos1
+- hosts: monitor-server
   tasks:
   - debug:
       var: hostvars[inventory_hostname]

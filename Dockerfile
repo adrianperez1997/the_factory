@@ -8,6 +8,9 @@ RUN apt update &&\
     apt install -y python3-pip &&\
     ansible-galaxy install geerlingguy.docker &&\
     ansible-galaxy install andrewrothstein.python &&\
+    ansible-galaxy install rossmcdonald.influxdb &&\
+    ansible-galaxy install cloudalchemy.grafana &&\
+    ansible-galaxy install rossmcdonald.telegraf&&\
     ansible-galaxy install geerlingguy.repo-epel
 
 
