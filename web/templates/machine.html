@@ -1,12 +1,15 @@
-<html>
+    {% extends "index.html" %}
+
+
+{% block content %}
+
     <title>{% for g in groups %}
                 {% for m in g.machines %}
                     {{ m.name }}
                 {% endfor %}
             {% endfor %}
     </title>
-    <body>
-    {% include "nav.html" %}
+
      <h1><strong>
         Machine: {% for g in groups %}
                 {% for m in g.machines %}
@@ -30,5 +33,4 @@
             <input type="submit" formaction="/machine/delete/" value="Delete"/></form>
 
     {% endif %}
-    </body>
-</html>
+    {% endblock %}

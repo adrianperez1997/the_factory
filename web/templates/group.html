@@ -1,11 +1,11 @@
-<html>
-    <head>
+    {% extends "index.html" %}
+
+
+{% block content %}
+
         <title>{% for g in groups %}
                 {{ g.name }}
             {% endfor %}</title>
-    </head>
-    <body>
-    {% include "nav.html" %}
      <h1><strong>
         Group: {% for g in groups %}
                 {{ g.name }}
@@ -24,5 +24,4 @@
         </form>
     {% endif %}
     {% include "running.html" %}
-    </body>
-</html>
+    {% endblock %}
