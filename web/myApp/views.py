@@ -21,7 +21,7 @@ def home(request):
         main.append({'name': g.name, 'machines': machines})
 
     return render(request, 'home.html',{"groups":main})
-
+    #return render(request, 'index.html')
 
 def machine_new(request):
     msg = ''
