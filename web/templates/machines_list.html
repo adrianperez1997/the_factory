@@ -1,34 +1,142 @@
+{% load static %}
+
 {% if groups%}
+<div class="container-fluid ">
+
+
     {% for g in groups%}
-        <h3><a href="/group/?name={{ g.name }}" methods="GET">{{ g.name }}<a/></h3>
+
+
+<div class="container-fluid">
+
+  <div class="row">
+       <div class="col-xl-12">
+
+          <div class="card bg-white">
+            <div class="card-header bg-transparent">
+
+<div class="table-responsive-xl">
+
+        <h3 class="h3"><a href="/group/?name={{ g.name }}" methods="GET">
+<button type="button" class="btn btn-primary">{{ g.name }}</button><a/></h3>
+
+
         {% if g.machines%}
-            <table style="width:70%">
-              <tr>
-                <th>Name</th>
-                <th>IP or HOSTNAME</th>
-                  <th>SO</th>
-                  <th>Cores</th>
-                  <th>RAM</th>
-                  <th>Group</th>
-                  <th>STATUS</th>
-              </tr>
-            {% for m in g.machines%}
-                <tr>
-                    <td><a href="/machine/?name={{ m.name }}" methods="GET">{{ m.name }}<a/> </td>
-                    <td> {{ m.ip }}:{{ m.port }} </td>
-                    <td> {{ m.distribution }} - {{ m.version }} </td>
-                    <td> {{ m.cores }} </td>
-                    <td> {{ m.ram }} </td>
-                    <td> {{ m.group.name }} </td>
-                    <td> {{ m.status }} </td>
-                </tr>
-            {% endfor %}
-            </table>
+
+    <table class="table align-items-left">
+        <thead class="thead-light">
+            <tr>
+                <th scope="col" class="sort" data-sort="name"><div class="display-4">Name</div></th>
+                <th scope="col" class="sort" data-sort="name"><div class="display-4">Hostname</div></th>
+                <th scope="col" class="sort" data-sort="name"><div class="display-4">SO</div></th>
+                <th scope="col"><div class="display-4">Cores</div></th>
+                <th scope="col" class="sort" data-sort="completion"><div class="display-4">Ram</div></th>
+                <th scope="col" class="sort" data-sort="completion"><div class="display-4">Group</div></th>
+                <th scope="col" class="sort" data-sort="completion"><div class="display-4">Status</div></th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody class="list">
+        {% for m in g.machines%}
+
+            <tr>
+                <th scope="row">
+                    <div class="media align-items-center">
+                        <div class="media-body">
+                            <span class="name mb-0 text-sm"><a href="/machine/?name={{ m.name }}" methods="GET"><div class="h2">{{ m.name }}</div></span>
+                        </div>
+                    </div>
+                </th>
+
+                <td> <div class="h3">{{ m.ip }}:{{ m.port }}</div> </td>
+
+                    <td>
+                         <div class="media align-items-center">
+                       {% if m.distribution == "CentOS" %}
+                        <a href="#" class="avatar rounded-circle mr-3">
+
+                       <img alt="Image placeholder" src="{% static 'img/theme/centos.png' %}">
+
+                        </a>
+                        {% elif m.distribution == "Ubuntu" %}
+                             <a href="#" class="avatar rounded-circle mr-3">
+
+                       <img alt="Image placeholder" src="{% static 'img/theme/ubuntu.png' %}">
+
+                        </a>
+                        {% elif m.distribution == "Debian" %}
+                             <a href="#" class="avatar rounded-circle mr-3">
+
+                       <img alt="Image placeholder" src="{% static 'img/theme/debian.png' %}">
+
+                        </a>
+
+                        {% endif %}
+                        <div class="media-body">
+                            <span class="name mb-0 text-sm"><div class="h3">{{ m.distribution }} - {{ m.version }}</div></span>
+                        </div>
+                    </div>
+                         </td>
+                <td> <div class="h3">{{ m.cores }}</div></td>
+                <td> <div class="h3">{{ m.ram }}</div></td>
+                <td><div class="h3"> {{ m.group.name }}</div></td>
+
+                <td>
+                              <span class="badge badge-dot mr-4">
+                        <div class="h3">
+                    {% if m.status == "ok" %}
+
+                      <i class="bg-success"></i>
+
+
+                        {% elif m.status == "unreachable" %}
+                      <i class="bg-warning"></i>
+
+
+                    {% elif m.status == "running" %}
+                      <i class="bg-blue"></i>
+
+                        {% endif %}
+                      <span class="status">{{ m.status }}</span>
+                    </span></div>
+                </td>
+
+                                <td class="text-right">
+                    <div class="dropdown">
+                        <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          <i class="fas fa-ellipsis-v"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                            <a class="dropdown-item" href="#">Action</a>
+                            <a class="dropdown-item" href="#">Another action</a>
+                            <a class="dropdown-item" href="#">Something else here</a>
+                        </div>
+                    </div>
+                </td>
+
+
+            </tr>
+
+            <tr>
+        {% endfor %}
+        </tbody>
+    </table>
 
             {% else %}
                 <p>No tienes ninguna maquina guardada</p>
             {% endif %}
+    </div>
+            </div>
+       </div>
+  </div>
+  </div>
+    </div>
+<div class="card"> </div>
     {% endfor %}
+</div>
+
+
 {% else %}
     <p>No tienes ningun grupo guardado</p>
 {% endif %}
+

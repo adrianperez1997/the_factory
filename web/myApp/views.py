@@ -12,15 +12,24 @@ import yaml
 
 
 def home(request):
-    k = Key(name='name')
-    k.save()
     groups = Group.objects.all()
     main = []
+    n_groups= 0
+    n_machines=0
+    total_ram= 0
+    total_cores= 0
     for g in groups:
+        n_groups = n_groups + 1
         machines = Machines.objects.filter(group_id=g.name)
+        for m in machines:
+            total_ram = total_ram + m.ram
+            total_cores = total_cores + m.cores
+
+        n_machines= n_machines+ machines.count()
         main.append({'name': g.name, 'machines': machines})
 
-    return render(request, 'home.html',{"groups":main})
+    info = {'n_machines': n_machines, 'n_groups':n_groups, 'total_cores':total_cores, 'total_ram':total_ram}
+    return render(request, 'home.html',{"groups":main, "info": info})
     #return render(request, 'index.html', {})
 
 def machine_new(request):
@@ -67,6 +76,7 @@ def machine_new_key(request):
     return new_machine(request, key_form=k)
 
 def machine_view_key(request):
+    keyfile = ''
     if request.method == "POST":
         try:
             vk = ViewKeyForm(request.POST)
@@ -74,27 +84,74 @@ def machine_view_key(request):
                 datavk = vk.cleaned_data
                 keyfile = datavk['key']
 
+            keyfile = 'keys/public/' + request.POST['selection'] + '.pub'
+
         except:
             vk = ViewKeyForm()
 
     else:
         vk = ViewKeyForm()
-    return new_machine(request, view_key_form=vk, keyfile=keyfile)
 
-def new_machine(request, msg='', key_form= KeyForm(), new_form=MachineForm(), view_key_form=ViewKeyForm(), keyfile='keys/public/default.pub'):
+    return new_machine(request, view_key_form=vk, keyfile=keyfile, key = Key.objects.filter(name=request.POST['selection'] ))
 
-    f =open(keyfile,'r')
-    key = f.read()
+
+def machine_view_group(request):
+    if request.method == "POST":
+        try:
+            group = Group.objects.filter(name=request.POST['selection_group'])
+
+        except:
+            group = Group.objects.filter(name='default')
+
+    else:
+        try:
+            group = Group.objects.filter(name=request.GET['selection_group'])
+        except:
+            group = Group.objects.filter(name='default')
+
+
+    return new_machine(request,group=group)
+
+def debug(msg):
+    f = open('data/debug.txt', 'a')
+    f.write(str(msg))
     f.close()
 
+def new_machine(request, msg='', key_form= KeyForm(), group=Group.objects.filter(name='default'), key=Key.objects.filter(name='default'), new_form=MachineForm(), view_key_form=ViewKeyForm(), keyfile='keys/public/default.pub'):
+
+
+    #f =open(keyfile,'r')
+    #keyf = f.read()
+    try:
+        key = Key.objects.filter(name=request.POST['selection'])
+        group= Group.objects.filter(name=request.POST['selection_group'])
+    except:
+        try:
+            Group.objects.filter(name=request.GET['selection_group'])
+            key = Key.objects.filter(name=request.GET['selection'])
+        except:
+            pass
+    #f.close()
+
+    selected_group = None
+    for k in group:
+        selected_group = k
+
+    keyo = None
+    for k in key:
+        keyo = k
     groups = Group.objects.all()
     main = []
     for g in groups:
         machines = Machines.objects.filter(group_id=g.name)
         main.append({'name': g.name, 'machines': machines})
 
-    return render(request, 'new_machine.html',{"groups": main,'msg':msg, 'form':new_form,'key_form':key_form,
-                                        'view_key_form': view_key_form, 'key':key})
+    keys = Key.objects.all()
+
+
+
+    return render(request, 'new_machine.html',{"groups": main,'selected_group': selected_group, 'msg':msg, 'form':new_form,'key_form':key_form,
+                                        'view_key_form': view_key_form, 'key':keyo, 'keys':keys})
 
 def new_group(request):
     msg = ''

@@ -4,7 +4,140 @@
 
 {% block content %}
 
-    <h2><strong> Mis maquinas</strong></h2>
+<div class="container-fluid mt--5">
+
+<div class="row">
+
+<div class="col-lg-2 col-md-6">
+
+<div class="card card-stats">
+
+
+
+
+
+
+
+
+
+    <!-- Card body -->
+    <div class="card-body bg-light">
+
+<div class="row">
+    <div class="col">
+        <h5 class="card-title text-uppercase mb-0">Machines</h5>
+        <span class="h2 font-weight-bold mb-0">{{ info.n_machines }}</span>
+    </div>
+    <div class="col-auto">
+      <div class="icon icon-shape bg-default text-white rounded-circle shadow">
+          <i class="ni ni-chart-pie-35"></i>
+      </div>
+    </div>
+</div>
+    </div>
+
+
+
+
+
+</div>
+
+
+</div>
+
+
+
+<div class="col-lg-2 col-md-6">
+
+<div class="card card-stats">
+
+
+    <!-- Card body -->
+    <div class="card-body bg-gray">
+
+<div class="row">
+    <div class="col">
+        <h5 class="card-title text-uppercase mb-0">Groups</h5>
+        <span class="h2 font-weight-bold mb-0">{{ info.n_groups }}</span>
+    </div>
+    <div class="col-auto">
+      <div class="icon icon-shape bg-red text-white rounded-circle shadow">
+          <i class="ni ni-chart-pie-35"></i>
+      </div>
+    </div>
+</div>
+    </div>
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="col-lg-2 col-md-6">
+
+<div class="card card-stats">
+
+
+    <!-- Card body -->
+    <div class="card-body bg-gray">
+
+<div class="row">
+    <div class="col">
+        <h5 class="card-title text-uppercase mb-0">Cores</h5>
+        <span class="h2 font-weight-bold mb-0">{{ info.total_cores }}</span>
+    </div>
+    <div class="col-auto">
+      <div class="icon icon-shape bg-primary text-white rounded-circle shadow">
+          <i class="ni ni-chart-pie-35"></i>
+      </div>
+    </div>
+</div>
+    </div>
+
+</div>
+
+
+</div>
+
+
+
+
+<div class="col-lg-2 col-md-6">
+
+<div class="card card-stats">
+
+
+    <!-- Card body -->
+    <div class="card-body bg-gray">
+
+<div class="row">
+    <div class="col">
+        <h5 class="card-title text-uppercase mb-0">RAM</h5>
+        <span class="h2 font-weight-bold mb-0">{{ info.total_ram }} Mb</span>
+    </div>
+    <div class="col-auto">
+      <div class="icon icon-shape bg-info text-white rounded-circle shadow">
+          <i class="ni ni-chart-pie-35"></i>
+      </div>
+    </div>
+</div>
+    </div>
+
+</div>
+
+
+</div>
+
+
+
+
+</div>
+</div>
+
 
     {% include "machines_list.html" %}
 

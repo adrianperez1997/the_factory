@@ -19,9 +19,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="Start your development with a Dashboard for Bootstrap 4.">
-  <meta name="author" content="Creative Tim">
-  <title>Argon Dashboard - Free Dashboard for Bootstrap 4</title>
+
+  <title>Adrian Perez</title>
 
   {% load static %}
     <!-- Favicon -->
@@ -40,9 +39,9 @@
 
 </head>
 
-<body>
+<body class="bg-lighter">
   <!-- Sidenav -->
-  <nav class="sidenav navbar navbar-vertical  fixed-left  navbar-expand-xs navbar-light bg-white" id="sidenav-main">
+  <nav class="sidenav navbar navbar-vertical  fixed-left  navbar-expand-xs navbar-light bg-translucent-light" id="sidenav-main">
     <div class="scrollbar-inner">
       <!-- Brand -->
       <div class="sidenav-header  align-items-center">
@@ -56,7 +55,7 @@
           <!-- Nav items -->
           <ul class="navbar-nav">
             <li class="nav-item">
-              <a class="nav-link active" href="/">
+              <a class="nav-link" href="/">
                 <i class="ni ni-tv-2 text-primary"></i>
                 <span class="nav-link-text">Home</span>
               </a>
@@ -106,7 +105,7 @@
   <!-- Main content -->
   <div class="main-content" id="panel">
     <!-- Topnav -->
-    <nav class="navbar navbar-top navbar-expand navbar-dark bg-primary border-bottom">
+    <nav class="navbar navbar-top navbar-expand navbar-dark bg-gradient-indigo border-bottom pb-7">
       <div class="container-fluid">
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <!-- Search form -->
@@ -125,9 +124,11 @@
           </form>
 
 
+
         </div>
       </div>
     </nav>
+
 
     {% block content %}{% endblock %}
 

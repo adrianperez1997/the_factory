@@ -5,10 +5,36 @@
 
     <title>New Group</title>
 
+    <div class="container-fluid m-2">
+
+<div class="card card-stats">
+    <div class="row bg-lighter">
+        <div class="col-3">
+
+
+        <div class="card-body bg-white">
+    <div class="input-group mb-3">
+
     <form action="/new_group/" method="POST">{% csrf_token %}
-        <p>{{ form.as_p }}</p>
-        <p><input type="submit" value="Add"></p>
+        <div class="row">
+    <div class="col">
+  <input type="text" name="name" class="form-control" placeholder="Group name" aria-label="Group name" aria-describedby="button-addon2">
+    </div>
+
+
+    <div class="col">
+  <div class="input-group-append">
+    <input class="btn btn-outline-primary" type="submit" value="Add " id="button-addon2"></input>
+  </div>
+    </div>
+        </div>
     </form>
+    </div>
+        </div>
+</div>
+</div>
+        </div>
+    </div>
     {% if msg %}
         <p>{{ msg }}</p>
     {% endif %}

@@ -3,39 +3,100 @@
 
 {% block content %}
 
+<div class="row mt--5">
 
-    <table style="width:100%">
-    <tr style="width:100%; padding-top:0px;"">
-        <th style="width:50%; padding-top:0px;">
+<div class="col-lg-5">
+
+
+          <div class="card bg-white">
+            <div class="card-header bg-transparent">
+
     <form action="/new_machine/machine_new/" method="POST">{% csrf_token %}
         <table>
             {{ form.as_table}}
         </table>
-        <p><input type="submit" value="Add"></p>
-        <p><input formaction="/form/test/"  type="submit" value="Test"></p>
-        <p><input formaction="/form/setup/"  type="submit" value="Setup"></p>
+        <div class="col">
+  <div class="input-group-append">
+    <input class="btn btn-outline-primary" type="submit" value="Add " id="button-addon2">
+  </div>
+    </div>
     </form>
     {% if msg %}
         <p>{{ msg }}</p>
     {% endif %}
-    </th>
+            </div>
+</div>
+          </div>
 
-    <th style="width:50%">
+
+
+
+
+
+
+<div class="col-lg-6">
+          <div class="card bg-white">
+            <div class="card-header bg-transparent">
+
+  <form action="/new_machine/machine_show_group/" method="POST">{% csrf_token %}
+        <!--<table>{{ view_key_form.as_table}}</table>-->
+        <select name="selection_group" class="form-control form-control-sm" onchange="this.form.submit()">
+            {% for g in groups %}
+            {% if g.name == group.name %}
+            <option selected="selected">{{ g.name }}</option>
+            {% else %}
+            <option>{{ g.name }}</option>
+            {% endif %}
+            {% endfor %}
+        </select>
+    </form>
+
+
+
+
+
+
     <form action="/new_machine/machine_new_key/" method="POST">{% csrf_token %}
-        <table>
-            {{ key_form.as_table}}
-        </table>
-        <p><input type="submit" value="Save"></p>
+
+                <div class="row">
+  <div class="input-group-append">
+      {{ key_form.name}}
+      <input class="btn btn-outline-primary" type="submit" value="Save " id="button-addon2">
+  </div>
+    </div>
     </form>
-    <form action="/new_machine/machine_show_key/" method="POST">{% csrf_token %}
-        <table>
-            {{ view_key_form.as_table}}
-        </table>
-        <p><input type="submit" value="View"></p>
+    <!-- <textarea style="height:300px; width:70%; position:static ;">{{ key }}</textarea> -->
+            </div>
+          </div>
+
+</div>
+</div>
+
+<div class="row">
+<div class="col-lg-5">
+          <div class="card bg-white">
+            <div class="card-header bg-transparent">
+
+  <form action="/new_machine/machine_show_key/" method="POST">{% csrf_token %}
+        <!--<table>{{ view_key_form.as_table}}</table>-->
+        <select name="selection" class="form-control form-control-sm" onchange="this.form.submit()">
+            {% for myk in keys %}
+            {% if myk.name == key.name %}
+            <option selected="selected">{{ myk.name }}</option>
+            {% else %}
+            <option>{{ myk.name }}</option>
+            {% endif %}
+            {% endfor %}
+        </select>
     </form>
-    <textarea style="height:300px; width:70%; position:static ;">{{ key }}</textarea>
-        </th>
-    </tr></table>
+
+    <label for="exampleFormControlTextarea1">Copy ssh-key in remote machine</label>
+    <textarea class="form-control" id="exampleFormControlTextarea1" rows="8">{{ key.public }}</textarea>
+
+</div>
+    </div>
+    </div>
+    </div>
 
      <h2><strong> Mis maquinas</strong></h2>
 
