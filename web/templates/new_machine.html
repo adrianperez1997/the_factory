@@ -2,84 +2,79 @@
 
 
 {% block content %}
-
-<div class="row mt--5">
-
-<div class="col-lg-5">
-
-
-          <div class="card bg-white">
-            <div class="card-header bg-transparent">
+<div class="col">
 
     <form action="/new_machine/machine_new/" method="POST">{% csrf_token %}
-        <table>
-            {{ form.as_table}}
-        </table>
-        <div class="col">
-  <div class="input-group-append">
-    <input class="btn btn-outline-primary" type="submit" value="Add " id="button-addon2">
-  </div>
-    </div>
-    </form>
-    {% if msg %}
-        <p>{{ msg }}</p>
-    {% endif %}
-            </div>
-</div>
-          </div>
+<div class="row mt--5">
+<div class="row-md-auto">
+<div class="col-md-auto">
 
 
-
-
-
-
-
-<div class="col-lg-6">
           <div class="card bg-white">
             <div class="card-header bg-transparent">
 
-  <form action="/new_machine/machine_show_group/" method="POST">{% csrf_token %}
-        <!--<table>{{ view_key_form.as_table}}</table>-->
-        <select name="selection_group" class="form-control form-control-sm" onchange="this.form.submit()">
-            {% for g in groups %}
-            {% if g.name == group.name %}
-            <option selected="selected">{{ g.name }}</option>
-            {% else %}
-            <option>{{ g.name }}</option>
-            {% endif %}
-            {% endfor %}
-        </select>
-    </form>
 
 
 
 
 
+             <div class="card-body">
 
-    <form action="/new_machine/machine_new_key/" method="POST">{% csrf_token %}
+                <h6 class="heading-small text-muted mb-4">Machine information</h6>
+                <div class="pl-lg-4">
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="form-group">
+                        <label class="form-control-label" for="input-username">Name</label>
+                          {% if form.name.value == None %}
+                        <input required="True" name="name" type="text" id="input-username" class="form-control" placeholder="myMachine">
+                            {% else %}
+                           <input required="True" name="name" type="text" id="input-username" class="form-control" value="{{ form.name.value }}" placeholder="myMachine">
+                          {% endif %}
+                      </div>
+                    </div>
+                    <div class="col-lg-6">
+                      <div class="form-group">
+                        <label class="form-control-label" for="input-email">Hostname</label>
+                         {% if form.name.value == None %}
+                        <input required="True" name="ip" type="text" id="input-username" class="form-control" placeholder="example.com:22">
+                            {% else %}
+                           <input required="True" name="ip" type="text" id="input-username" class="form-control" value="{{ form.ip.value }}" placeholder="example.com:22">
+                          {% endif %}
 
-                <div class="row">
-  <div class="input-group-append">
-      {{ key_form.name}}
-      <input class="btn btn-outline-primary" type="submit" value="Save " id="button-addon2">
-  </div>
-    </div>
-    </form>
-    <!-- <textarea style="height:300px; width:70%; position:static ;">{{ key }}</textarea> -->
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="form-group">
+                        <label class="form-control-label" for="input-first-name">User</label>
+                          {% if form.name.value == None %}
+                        <input required="True" name="user" type="text" id="input-username" class="form-control" placeholder="myUser">
+                            {% else %}
+                           <input required="True" name="user" type="text" id="input-username" class="form-control" value="{{ form.user.value }}" placeholder="myUser">
+                          {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <hr class="my-4" />
+
             </div>
+
+            </div>
+
+
           </div>
 
 </div>
-</div>
-
-<div class="row">
-<div class="col-lg-5">
+<div class="row-md-auto">
+<div class="col-md-auto">
           <div class="card bg-white">
             <div class="card-header bg-transparent">
 
-  <form action="/new_machine/machine_show_key/" method="POST">{% csrf_token %}
         <!--<table>{{ view_key_form.as_table}}</table>-->
-        <select name="selection" class="form-control form-control-sm" onchange="this.form.submit()">
+        <select name="keys" class="form-control form-control-sm" onchange="this.form.action='/new_machine/'; this.form.method='GET'; this.form.submit()">
             {% for myk in keys %}
             {% if myk.name == key.name %}
             <option selected="selected">{{ myk.name }}</option>
@@ -88,7 +83,7 @@
             {% endif %}
             {% endfor %}
         </select>
-    </form>
+
 
     <label for="exampleFormControlTextarea1">Copy ssh-key in remote machine</label>
     <textarea class="form-control" id="exampleFormControlTextarea1" rows="8">{{ key.public }}</textarea>
@@ -96,9 +91,85 @@
 </div>
     </div>
     </div>
+</div>
+
+<div class="row-md-auto">
+                <div class="col align-right ">
+  <div class="input-group-append">
+    <input class="btn btn-outline-primary" type="submit" value="Add " id="button-addon2">
+  </div>
+    </div>
+</div>
+
+
+    {% if msg %}
+        <p>{{ msg }}</p>
+    {% endif %}
+
+            </div>
+
+
+
+
+
+
+
+<div class="col-xl-6">
+          <div class="card bg-white">
+            <div class="card-header bg-transparent">
+
+        <!--<table>{{ view_key_form.as_table}}</table>-->
+        <select name="group" class="form-control form-control-sm" onchange="this.form.action='/new_machine/'; this.form.method='GET'; this.form.submit()">
+            {% for g in groups %}
+            {% if g.name == info.group.name %}
+            <option selected="selected">{{ g.name }}</option>
+            {% else %}
+            <option>{{ g.name }}</option>
+            {% endif %}
+            {% endfor %}
+        </select>
+                <ul>
+        {% for m in info.machines %}
+                <li>{{ m.name }}                {{ m.distribution }} - {{ m.version }}</li>
+        {% endfor %}
+</ul>
+
+
+
+
+
+
+
+
+
+    <!-- <textarea style="height:300px; width:70%; position:static ;">{{ key }}</textarea> -->
+            </div>
+          </div>
+</div>
+
+
+          </form>
+    </div>
+
+
+
+
+
+                <div class="row">
+  <div class="input-group-append">
+      {{ key_form.name}}
+      <input class="btn btn-outline-primary" type="submit" value="Save " id="button-addon2">
+  </div>
     </div>
 
      <h2><strong> Mis maquinas</strong></h2>
 
+
+
+
+
+
+
     {% include "machines_list.html" %}
     {% endblock %}
+
