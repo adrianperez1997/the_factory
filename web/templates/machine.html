@@ -20,17 +20,138 @@
     {% include "machines_list.html" %}
 
 
-    {% if edit_form %}
+<div class="row-md-auto">
+<div class="col-md-auto">
+
+
+          <div class="card bg-white">
+            <div class="card-header bg-transparent">
+
+
+
+
+
+
         <form action="/machine/edit/" method="GET">
-            <ul>{{ edit_form.as_ul }}</ul>
+
+             <div class="card-body">
+
+                <h6 class="heading-small text-muted mb-4">Machine information</h6>
+                <div class="pl-lg-4 ">
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="form-group">
+                        <label class="form-control-label" for="input-email">Hostname</label>
+                         {% if edit_form.name.value == None %}
+                        <input name="ip" type="text" id="input-username" class="form-control" placeholder="example.com:22">
+                            {% else %}
+                           <input name="ip" type="text" id="input-username" class="form-control" value="{{ edit_form.ip.value }}" placeholder="example.com:22">
+                          {% endif %}
+
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="form-group">
+                        <label class="form-control-label" for="input-first-name">User</label>
+                          {% if edit_form.name.value == None %}
+                        <input name="user" type="text" id="input-username" class="form-control" placeholder="myUser">
+                            {% else %}
+                           <input name="user" type="text" id="input-username" class="form-control" value="{{ edit_form.user.value }}" placeholder="myUser">
+                          {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                              <div class="row">
+                    <div class="col-lg-6">
+                      <div class="form-group">
+                        <label class="form-control-label" for="input-first-name">Key</label>
+                   <select name="keys" class="form-control form-control-sm">
+            {% for myk in keys %}
+            {% if myk.name == key.name %}
+            <option selected="selected">{{ myk.name }}</option>
+            {% else %}
+            <option>{{ myk.name }}</option>
+            {% endif %}
+            {% endfor %}
+        </select>
+                      </div>
+                    </div>
+                  </div>
+
+
+
+
+                </div>
+                <hr class="my-4" />
+
+
+
+            </div>
+
             {% for g in groups %}
                 {% for m in g.machines %}
                     <input type="text" name="name"  value="{{ m.name }}" hidden="True">
                 {% endfor %}
             {% endfor %}
-            <input type="submit" value="Edit"/>
-            <input type="submit" formaction="/machine/test/" value="Test"/>
-            <input type="submit" formaction="/machine/delete/" value="Delete"/></form>
+            <input type="submit" class="btn btn-primary" value="Edit"/>
+            <input type="submit" class="btn btn-success" formaction="/machine/test/" value="Test"/>
 
-    {% endif %}
+
+
+
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal">
+  Delete
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Are you sure?</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+                      {% for g in groups %}
+                {% for m in g.machines %}
+        This will delete machine "{{ m.name }}" and all its information.
+          Please confirm to delete.
+                          {% endfor %}
+            {% endfor %}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <input type="submit" class="btn btn-danger" formaction="/machine/delete/" value="Delete"/>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+</form>
+
+
+
+            </div>
+
+
+          </div>
+
+</div>
+
+
+<div class="row-md-auto">
+<div class="col-md-auto">
+          <div class="card bg-white">
+            <div class="card-header bg-transparent">
+
+
+
     {% endblock %}

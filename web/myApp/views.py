@@ -210,7 +210,7 @@ def machine_delete(request):
     if request.method=="GET":
         delete_machine(request.GET["name"])
 
-    return machine(request)
+    return home(request)
 
 
 def machine_test(request):
@@ -302,7 +302,7 @@ def machine(request, msg='', edit_form=EditMachineForm()):
         main.append({'name': n, 'machines': machines})
 
 
-        return render(request, 'machine.html',{"edit_form":edit_form,"groups":main})
+        return render(request, 'machine.html',{"edit_form":edit_form,"groups":main, 'keys':Key.objects.all()})
 
 def setup(request):
     miform = MachineForm(request.POST)
