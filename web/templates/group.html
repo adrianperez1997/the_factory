@@ -12,15 +12,31 @@
             {% endfor %}
     </strong></h1>
     <h3>Group machines</h3>
-    <form method="GET" action="/test/">
+
+       <form method="GET" action="/group/run/">
         {% include "machines_list2.html" %}
 
     {% if p_form %}
-            <p>{{ p_form.as_p }}</p>
-            {% for g in groups %}
+            <div class="row-md-auto">
+<div class="col-md-auto">
+          <div class="card bg-white">
+            <div class="card-header bg-transparent">
+
+    {{ p_form.option.label }}{{ p_form.option }}
+                            {% for g in groups %}
                     <input type="text" name="name"  value="{{ g.name }}" hidden="True">
                 {% endfor %}
-            <input type="submit" formaction="/group/run/" value="Run"/>
+
+  <div class="input-group-append">
+    <input class="btn btn-primary" type="submit" value="Run" id="button-addon2">
+  </div>
+
+
+</div>
+    </div>
+    </div>
+</div>
+
         </form>
     {% endif %}
     {% include "running.html" %}

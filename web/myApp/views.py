@@ -63,17 +63,20 @@ def machine_new(request):
 
 def machine_new_key(request):
     if request.method=="POST":
+
+        debug('entra primero')
         try:
             k = KeyForm(request.POST)
             if k.is_valid():
                 datak = k.cleaned_data
-                new_key(datak['name'])
+                debug(datak['name'])
+                generate_key(datak['name'])
         except:
             k = KeyForm()
     else:
         k = KeyForm()
 
-    return new_machine(request, key_form=k)
+    return new_key(request, key_form=k)
 
 def machine_view_key(request):
     keyfile = ''
@@ -205,6 +208,8 @@ def new_group(request):
 
 
 
+def new_key(request, key_form = KeyForm()):
+    return render(request, 'new_key.html',{'key_form': key_form})
 
 def machine_delete(request):
     if request.method=="GET":

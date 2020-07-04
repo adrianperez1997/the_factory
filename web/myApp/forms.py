@@ -47,4 +47,4 @@ class GroupForm(forms.Form):
 
 class PrepareForm(forms.Form):
     option = forms.ChoiceField(label="Prepare with: ",choices=[('docker','Docker Server'),('monitor','InfluxDB + Grafana'),
-                                                               ('compose','docker-compose')])
+                                                               ('monitor-agent', 'Telegraf agent'), ('compose','docker-compose')])

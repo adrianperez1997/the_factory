@@ -20,7 +20,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <title>Adrian Perez</title>
+  <title>The Factory</title>
 
   {% load static %}
     <!-- Favicon -->
@@ -45,10 +45,14 @@
     <div class="scrollbar-inner">
       <!-- Brand -->
       <div class="sidenav-header  align-items-center">
-        <a class="navbar-brand" href="javascript:void(0)">
-          <img src="{% static 'img/brand/blue.png' %}" class="navbar-brand-img" alt="...">
+        <a class="container row-md-auto" href="">
+
+          <img src="{% static 'img/brand/factory.png' %}" class="img-fluid" alt="Factory logo">
+
         </a>
       </div>
+                        <!-- Divider -->
+          <hr class="my-4">
       <div class="navbar-inner">
         <!-- Collapse -->
         <div class="collapse navbar-collapse" id="sidenav-collapse-main">
@@ -70,6 +74,12 @@
               <a class="nav-link" href="/new_group/">
                 <i class="ni ni-pin-3 text-primary"></i>
                 <span class="nav-link-text">New Group</span>
+              </a>
+            </li>
+             <li class="nav-item">
+              <a class="nav-link" href="/new_key/">
+                <i class="ni ni-pin-3 text-primary"></i>
+                <span class="nav-link-text">New ssh-key</span>
               </a>
             </li>
           </ul>

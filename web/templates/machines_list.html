@@ -110,6 +110,7 @@
 
 
                             <input type="text" name="name"  value="{{ m.name }}" hidden="True">
+                            <a class="dropdown-item" href="http://{{ m.ip }}:3000" target="_blank">Grafana</a>
                             <a class="dropdown-item" href="/machine/?name={{ m.name }}">Edit</a>
                             <a class="dropdown-item" href="/machine/test/?name={{ m.name }}">Test</a>
 

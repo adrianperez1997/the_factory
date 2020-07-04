@@ -1,41 +1,72 @@
 <meta http-equiv="refresh" content="100" >
 {% if runs %}
+<div class="container-xl bg-trasparent">
     <h3>My runs</h3>
     {% for run in runs %}
-        <p>-------------------------------------------------------------------------------</p>
-         <table style="width:50%">
-                <tr>
-                    <th><strong>Play</strong></th>
-                    <th><strong>Status</strong></th>
-                </tr>
-                <tr>
-                    <th>{{ run.playbook }}</th>
-                    <th>{{ run.status }}</th>
-                </tr>
-         </table><p>
 
-</p>
-        <table style="width:50%">
-            <tr>
-                <th><strong>Machine</strong></th>
-                <th><strong>Event</strong></th>
-            </tr>
-            {% if run.machines %}
-            {% for m in run.machines.all %}
-            <tr>
-                <th>{{ m.name }}</th>
-                <th>{{ m.event }}</th>
-            </tr>
-            {% endfor %}
-            {% endif %}
-        </table><p>
+          <div class="card bg-trasparent">
+            <div class="card-header bg-trasparent">
+                <div class="card-body bg-white">
 
-</p>
-        <textarea style="height:300px; width:70%; position:static ;">{{ run.stdout}}</textarea>
-<form action="/group/delete_run/">
+                    <div class="col">
+
+                        <table class="table align-items-left">
+                            <thead class="thead-light">
+                            <tr>
+                                <th scope="col" class="sort" data-sort="name"><strong>Play</strong></th>
+                                <th scope="col" class="sort" data-sort="status"><strong>Status</strong></th>
+                            </tr>
+                                    </thead>
+        <tbody class="list">
+                            <tr>
+                                <th>{{ run.playbook }}</th>
+                                <th>{{ run.status }}</th>
+                            </tr>
+        </tbody>
+                        </table>
+
+                    </div>
+
+
+                    <div class="col">
+                        <table class="table align-items-left">
+                            <thead class="thead-light">
+
+                            <tr>
+                                <th scope="col" class="sort" data-sort="name"><strong>Machine</strong></th>
+                                <th scope="col" class="sort" data-sort="name"><strong>Event</strong></th>
+                            </tr>
+                                                              </thead>
+        <tbody class="list">
+                            {% if run.machines %}
+                            {% for m in run.machines.all %}
+                            <tr>
+                                <th>{{ m.name }}</th>
+                                <th>{{ m.event }}</th>
+                            </tr>
+                            {% endfor %}
+                            {% endif %}
+                                    </tbody>
+                        </table>
+                                          </div>
+
+                         <label for="exampleFormControlTextarea1">Stdout</label>
+    <textarea class="form-control" id="exampleFormControlTextarea1" rows="8">{{ run.stdout }}</textarea>
+
+
+                    <form action="/group/delete_run/">
     <input type="text" name="name"  value="{{ run.group_id }}" hidden="True">
     <input type="text" name="delete"  value="{{ run.ident }}" hidden="True">
-    <input type="submit" value="Delete"></form>
+    <input class="btn btn-danger" type="submit" value="Delete"></form>
+                </div>
+            </div>
+          </div>
+
+
+
+
     {% endfor %}
+
+    </div>
 {% endif %}
 

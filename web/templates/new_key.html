@@ -1,0 +1,22 @@
+    {% extends "index.html" %}
+
+
+{% block content %}
+
+<div class="row-md-auto">
+<div class="col-md-auto">
+          <div class="card bg-white">
+            <div class="card-header bg-transparent">
+    <form action="/new_key/new/" method="POST">{% csrf_token %}
+  <div class="input-group-append">
+
+      {{ key_form.name}}
+      <input class="btn btn-outline-primary" type="submit" value="Save " id="button-addon2">
+  </div>
+    </form>
+    </div>
+</div>
+</div>
+</div>
+
+        {% endblock %}

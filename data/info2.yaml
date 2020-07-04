@@ -1,4 +1,4 @@
-- hosts: jkol
+- hosts: test
   tasks:
   - debug:
       var: hostvars[inventory_hostname]

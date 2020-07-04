@@ -10,7 +10,9 @@ RUN apt update &&\
     ansible-galaxy install andrewrothstein.python &&\
     ansible-galaxy install rossmcdonald.influxdb &&\
     ansible-galaxy install cloudalchemy.grafana &&\
-    ansible-galaxy install rossmcdonald.telegraf&&\
+    ansible-galaxy install rossmcdonald.telegraf &&\
+    ansible-galaxy install mrlesmithjr.influxdb &&\
+    ansible-galaxy install dj-wasabi.telegraf &&\
     ansible-galaxy install geerlingguy.repo-epel
 
 

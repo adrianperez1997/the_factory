@@ -30,6 +30,7 @@ class Machines(models.Model):
     ram=models.IntegerField(default=0)
     status=models.CharField(default='default', max_length=50)
     event=models.CharField(max_length=50, default='')
+    monitor=models.CharField(max_length=50, default='None')
 
     def __str__(self):
         return 'Machine: ' + self.name + ' IP: ' + self.ip

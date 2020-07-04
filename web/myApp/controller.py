@@ -28,8 +28,22 @@ def run_group(name, option, machines_names):
 
     elif option == 'monitor':
         run.playbook='data/monitor-server.yaml'
+
         run_playbook(name, 'data/monitor-server.yaml', inventory=inventory_filename, ident=str(run.ident),
-                     event_handler=docker_event_handler2)
+                     event_handler=monitor_server_event_handler)
+
+    elif option == 'monitor-agent':
+        machines =  Machines.objects.filter(group_id=name, monitor='server')
+        if machines:
+            for m in machines:
+                run.playbook='data/monitor-agent.yaml'
+                import configparser
+                config = configparser.ConfigParser()
+                config.read_file(open('/data/telegraf-agent.conf'))
+                config['[outputs.influxdb']['urls'] = "['http://" + m.ip + ":8086']"
+                config.write(open('/data/telegraf-agent.conf', 'w'))
+                run_playbook(name, 'data/monitor-agent.yaml', inventory=inventory_filename, ident=str(run.ident),
+                             event_handler=docker_event_handler2)
 
     elif option == 'compose':
         run.playbook='data/compose.yaml'
@@ -100,13 +114,14 @@ def add_machine(name, ip, key, user, group,port=22):
         return 'Invalid name'
 
 def debug(msg):
-    f = open('data/debug.log', 'a')
-    f.write(msg)
+    f = open('data/debug.txt', 'a')
+    f.write(msg + '\n')
     f.close()
 
-def new_key(name):
+def generate_key(name):
+    debug('Entra?')
     if not Key.objects.filter(name=name):
-
+        debug('Entra?')
         keyname = 'keys/'+name
         passphrase= ""
         subprocess.run([ "ssh-keygen", "-b", "2048", "-t", "rsa", "-f",keyname, "-q","-N",passphrase])
@@ -219,6 +234,7 @@ def general_event_handler(event):
     f.close()
 
     return event
+
 def docker_event_handler2(event):
     try:
         logging.info(str(event['stdout']))
@@ -278,6 +294,63 @@ def docker_event_handler2(event):
         f = open('data/debug.txt', 'a')
         f.write('FINAL: ' + str(event) + '\n')
         f.close()
+
+
+def monitor_server_event_handler(event):
+    try:
+        logging.info(str(event['stdout']))
+        r = Run.objects.filter(ident=int(event['runner_ident']))
+        stdout = ''
+        for run in r:
+            stdout = run.stdout + event['stdout']
+        Run.objects.filter(ident=int(event['runner_ident'])).update(stdout=stdout)
+
+    except Exception as e:
+        logging.error('Error: '+ str(e))
+
+    try:
+        Machines.objects.filter(name=event['event_data']['host']).update(event=event['event'])
+    except Exception as e:
+        logging.error('Error: '+str(e))
+
+    if event['event'] == 'runner_on_ok':
+        try:
+            Machines.objects.filter(name=event['event_data']['host']).update(status='running')
+
+        except Exception as e:
+            logging.error('Error: '+ e)
+
+    if event['event'] == 'runner_on_start':
+        try:
+            Machines.objects.filter(name=event['event_data']['host']).update(status='running')
+
+        except Exception as e:
+            logging.error('Error: '+ e)
+
+    elif event['event'] == 'playbook_on_stats':
+
+        if event['event_data']['ok'] != {}:
+            for ok in event['event_data']['ok'].keys():
+                try:
+                    Machines.objects.filter(name=ok).update(status='ok', monitor='server')
+                except Exception as e:
+                    logging.error('Error: ' + e)
+
+        if event['event_data']['dark'] != {}:
+            for dark in event['event_data']['dark'].keys():
+                try:
+                    Machines.objects.filter(name=dark).update(status='unreachable')
+                except Exception as e:
+                    logging.error('Error: ' + e)
+
+        if event['event_data']['failures'] != {}:
+            for failures in event['event_data']['failures'].keys():
+                try:
+                    Machines.objects.filter(name=failures).update(status='fails')
+                except Exception as e:
+                    logging.error('Error: ' + e)
+
+
 
 
 def docker_event_handler(event):

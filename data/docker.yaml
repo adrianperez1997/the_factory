@@ -1,6 +1,6 @@
 - become: true
   gather_facts: true
-  hosts: default
+  hosts: gruponuevo
   name: Instalando docker y weave
   tasks:
   - become: true
