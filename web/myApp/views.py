@@ -265,6 +265,7 @@ def delete_run(request):
     return test(request)
 
 def group_run(request):
+    filename = ''
     if request.method=="GET":
         all_machines = Machines.objects.filter(group_id=request.GET['name'])
         machines = []
@@ -278,22 +279,66 @@ def group_run(request):
                 if request.GET['check']==m.name:
                     machines.append(m.name)
 
-        run_group(name=request.GET["name"],option=request.GET["option"], machines_names=machines)
+
+        try:
+            file = 'algo'
+            debug(request.FILES)
+            p = PrepareForm(request.POST, request.FILES)
+            if p.is_valid():
+                data = p.cleaned_data
+                file = data['file']
+                filename = request.GET['file']
+        except:
+            debug('except\n')
+        run_group(name=request.GET["name"], option=request.GET["option"],filename=filename, file=file, machines_names=machines)
+
+    else:
+        all_machines = Machines.objects.filter(group_id=request.POST['name'])
+        machines = []
+        if 'All' in request.POST:
+            for m in all_machines:
+                machines.append(m.name)
+        elif not 'check' in request.POST:
+            return test(request)
+        else:
+            for m in all_machines:
+                if request.POST['check'] == m.name:
+                    machines.append(m.name)
+
+        try:
+            file = 'algo'
+            debug(request.FILES['file'])
+            p = PrepareForm(request.POST, request.FILES)
+
+            if p.is_valid():
+                data = p.cleaned_data
+                file = data['file']
+                filename = request.FILES['file'].name
+        except:
+            debug('except\n')
+
+
+        run_group(name=request.POST["name"], option=request.POST["option"], filename = filename, file=file, machines_names=machines)
+
     return test(request)
 
 def test(request):
     main=[]
 
-    machines = Machines.objects.filter(group_id=request.GET['name'])
-    main.append({'name': request.GET['name'], 'machines': machines})
-
     if request.method=="GET":
+        machines = Machines.objects.filter(group_id=request.GET['name'])
+        main.append({'name': request.GET['name'], 'machines': machines})
         p = PrepareForm()
+
+        runs = Run.objects.filter(group_id=request.GET['name'], finished=False)
     elif request.method=="POST":
+        machines = Machines.objects.filter(group_id=request.POST['name'])
+        main.append({'name': request.POST['name'], 'machines': machines})
         p = PrepareForm(request.POST)
 
+        runs = Run.objects.filter(group_id=request.POST['name'], finished=False)
 
-    runs = Run.objects.filter(group_id=request.GET['name'], finished=False)
+
     return render(request, 'group.html',{"p_form":p,"groups":main, 'runs': runs})
 
 

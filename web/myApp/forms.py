@@ -46,5 +46,6 @@ class GroupForm(forms.Form):
 
 
 class PrepareForm(forms.Form):
-    option = forms.ChoiceField(label="Prepare with: ",choices=[('docker','Docker Server'),('monitor','InfluxDB + Grafana'),
+    option = forms.ChoiceField(label="Prepare with: ",choices=[('docker','Docker Server'),('wordpress', 'Wordpress'),('monitor','InfluxDB + Grafana'),
                                                                ('monitor-agent', 'Telegraf agent'), ('compose','docker-compose')])
+    file = forms.FileField(required=False)

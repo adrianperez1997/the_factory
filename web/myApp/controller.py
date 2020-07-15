@@ -8,7 +8,7 @@ logging.basicConfig(filename='data/debug.log', format='%(asctime)s - %(levelname
 
 
 
-def run_group(name, option, machines_names):
+def run_group(name, option, machines_names, file, filename):
     machines = Machines.objects.filter(group_id=name)
     #machines.update(status='Preparing...')
     run = Run(group_id=name)
@@ -33,23 +33,41 @@ def run_group(name, option, machines_names):
                      event_handler=monitor_server_event_handler)
 
     elif option == 'monitor-agent':
-        machines =  Machines.objects.filter(group_id=name, monitor='server')
+        machines = Machines.objects.filter(group_id=name, monitor='server')
         if machines:
-            for m in machines:
+            for server in machines:
                 run.playbook='data/monitor-agent.yaml'
                 import configparser
                 config = configparser.ConfigParser()
                 config.read_file(open('/data/telegraf-agent.conf'))
-                config['[outputs.influxdb']['urls'] = "['http://" + m.ip + ":8086']"
+                config['outputs.influxdb']['urls'] = "['http://" + server.ip + ":8086']"
+                config['agent']['hostname'] = "'" + 'centos-2' + "'"
                 config.write(open('/data/telegraf-agent.conf', 'w'))
                 run_playbook(name, 'data/monitor-agent.yaml', inventory=inventory_filename, ident=str(run.ident),
                              event_handler=docker_event_handler2)
-
-    elif option == 'compose':
+    elif option == 'wordpress':
         run.playbook='data/compose.yaml'
         run_playbook(name, 'data/compose.yaml', inventory=inventory_filename, ident=str(run.ident),
                      event_handler=docker_event_handler2)
 
+
+    elif option == 'compose':
+        name = 'data/composes/' + filename
+        if file != '':
+            with open(name, 'wb+') as destination:
+                for chunk in file.chunks():
+                    destination.write(chunk)
+        else:
+            f = open(name, 'w')
+            f.write(str(file))
+            f.close()
+            return
+
+            """
+            run.playbook='data/compose.yaml'
+            run_playbook(name, 'data/compose.yaml', inventory=inventory_filename, ident=str(run.ident),
+                         event_handler=docker_event_handler2)
+"""
 
 def delete_machine(name):
     machine = Machines.objects.filter(name=name)
@@ -395,7 +413,7 @@ def gather_facts_event_handler(event):
     f = open('data/debug.txt','a')
     f.write('event: '+str(event['stdout'])+ '\n')
     f.close()
-    print('event: '+str(event))
+    #print('event: '+str(event))
     if event['event']=='runner_on_ok':
         try:
             dist = str(event['event_data']['res']['ansible_facts']['ansible_distribution'])
@@ -403,7 +421,7 @@ def gather_facts_event_handler(event):
             cores = int(event['event_data']['res']['ansible_facts']['ansible_processor_cores'])
             ram = int(event['event_data']['res']['ansible_facts']['ansible_memtotal_mb'])
             Machines.objects.filter(name=event['event_data']['host']).update(cores=cores,version=version,
-                                                                             distribution=dist, ram=ram, status='ready')
+                                                                             distribution=dist, ram=ram, status='ok')
             #m1 = Machines(name=event['event_data']['host'],cores=cores,version=version, distribution=dist, ram=ram)
             #m1.save()
         except:

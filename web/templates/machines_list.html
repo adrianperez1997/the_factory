@@ -98,8 +98,7 @@
 
                         {% endif %}
                       <span class="status">{{ m.status }}</span>
-                    </span></div>
-                </td>
+                        </div></span></td>
      <form>
                                 <td class="text-right">
                     <div class="dropdown">
@@ -110,7 +109,9 @@
 
 
                             <input type="text" name="name"  value="{{ m.name }}" hidden="True">
+                            {% if m.monitor == "server" %}
                             <a class="dropdown-item" href="http://{{ m.ip }}:3000" target="_blank">Grafana</a>
+                            {% endif %}
                             <a class="dropdown-item" href="/machine/?name={{ m.name }}">Edit</a>
                             <a class="dropdown-item" href="/machine/test/?name={{ m.name }}">Test</a>
 

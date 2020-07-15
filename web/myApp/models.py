@@ -2,10 +2,10 @@ from django.db import models
 
 
 class Group(models.Model):
-    name=models.CharField(max_length=50, unique=True, primary_key=True, default='general')
-    status=models.CharField(max_length=50, default='default')
-    ram=models.IntegerField(default=0)
-    cores=models.IntegerField(default=0)
+    name = models.CharField(max_length=50, unique=True, primary_key=True, default='default')
+    status = models.CharField(max_length=50, default='default')
+    ram = models.IntegerField(default=0)
+    cores = models.IntegerField(default=0)
 
 class Key(models.Model):
     name=models.CharField(max_length=50, unique=True, primary_key=True)

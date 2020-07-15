@@ -11,9 +11,8 @@
                 {{ g.name }}
             {% endfor %}
     </strong></h1>
-    <h3>Group machines</h3>
 
-       <form method="GET" action="/group/run/">
+       <form method="POST" action="/group/run/" enctype="multipart/form-data">{% csrf_token %}
         {% include "machines_list2.html" %}
 
     {% if p_form %}
@@ -22,8 +21,14 @@
           <div class="card bg-white">
             <div class="card-header bg-transparent">
 
-    {{ p_form.option.label }}{{ p_form.option }}
-                            {% for g in groups %}
+                            <select id="mySelect" name="option"  onchange="show()">
+                {% for o in p_form.option %}
+                                {{ o }}
+                 {% endfor %}
+                            </select>
+
+                <p id="demo" hidden="True">{{ p_form.file }}</p>
+                             {% for g in groups %}
                     <input type="text" name="name"  value="{{ g.name }}" hidden="True">
                 {% endfor %}
 
@@ -40,4 +45,13 @@
         </form>
     {% endif %}
     {% include "running.html" %}
+
+    <script>
+function show() {
+  var x = document.getElementById("mySelect").value;
+  if (x === "compose"){
+  document.getElementById("demo").hidden = false;}
+}
+</script>
+
     {% endblock %}

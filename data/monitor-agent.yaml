@@ -1,6 +1,6 @@
 - become: true
   gather_facts: true
-  hosts: monitoring
+  hosts: mygroup
   name: Instalando influxdb
   tasks:
   - include_role:
