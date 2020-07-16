@@ -19,8 +19,9 @@ RUN apt update &&\
 ADD requirements.txt /
 RUN pip3 install -r requirements.txt
 
-RUN mkdir /keys/public
-RUN mkdir /keys/private
+RUN mkdir /keys
+RUN mkdir /keys/public/
+RUN mkdir /keys/private/
 
 COPY /data/ /data/
 
