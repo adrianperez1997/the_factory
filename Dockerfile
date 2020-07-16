@@ -28,8 +28,6 @@ COPY /data/ /data/
 #RUN chmod 600 /keys/miclave
 #RUN chmod 644 /keys/miclave.pub
 
-ADD main.py /
-RUN chmod 700 /main.py
 COPY /web/ /web/
 RUN python3 /web/manage.py makemigrations &&\
     python3 /web/manage.py migrate

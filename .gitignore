@@ -14,5 +14,4 @@ bbdd.py
 web/web/__pycache__/
 web/myApp/__pycache__/
 web/myApp/migrations/__pycache__/
-keys/
 web/myApp/migrations/
