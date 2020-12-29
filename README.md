@@ -1,9 +1,19 @@
 # The Factory
 
+### Interfaz gráfica para desplegar sistemas de forma sencilla y automática.
+
+Gracias a esta interfaz podremos:
+
+- Instalar docker con una red privada entre las máquinas aunque estén en clouds públicas o privadas diferentes
+- Lanzar aplicaciones conetenerizadas como Wordpress
+- Lanzar archivo docker-compose
+- Instalar agente Telegraf para monitorización
+- Instalar base de datos InfluxDB + Grafana para monitorización
+- Lanzar playbook de Ansible propio
+
+
 Este proyecto trata de desarrollar una plataforma ligera de configuración que reduzca el proceso de administración y que permita desplegar recursos 
-de computación de forma sencilla, dinámica y eficiente. Para ello se ha desarrollado una interfaz web accesible desde cualquier navegador y desplegada
-mediante Docker. Nuestra máxima con esta idea es la simplicidad y sencillez, es decir, evadirnos de complicadas configuraciones que requieren de un
-profesional para administrar.
+de computación de forma sencilla, dinámica y eficiente. La interfaz abstrae la idea de máquina para poder configurar servidores en clouds públicas y privadas 
 
 
 ## Instalación
@@ -30,7 +40,7 @@ En la página principal podremos ver un resumen de nuestro sistema. Automáticam
 > Págna principal
 
 Las máquinas se dividen en grupos que podemos crear en la pestaña nuevo grupo. En la pestaña de "nueva máquina" podremos añadir nuevos servidores. 
-Deberemos seleccionar una clave ssh creada previamente y asignarlo a un grupo. Si queremos especificar un puerto diferente podremos hacerlo de 
+Deberemos seleccionar una clave ssh creada previamente y asignarlo a un grupo. Si queremos especificar un puerto diferente podremos hacerlo de
 la manera: example.com:2222
 
 Una vez añadido se intentará conectar a la máquina.
